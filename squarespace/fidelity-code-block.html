@@ -1,0 +1,809 @@
+<!--
+=====================================================================
+  FIDELITY CAPITAL — SQUARESPACE 7.1 CODE BLOCK
+  Source: "Fidelity Capital Website – New Design" (homepage + Apply page),
+  with the Zapier / Zoho submission logic from the earlier coded build.
+
+  HOW TO INSTALL
+  1. Edit page → Add Block → Code. Paste this whole file. Turn
+     "Display Source" OFF.
+  2. Stretch the block to full width (Fluid Engine: drag it edge to edge)
+     and set the section's padding to the minimum, so the coloured bands
+     run the full width of the page.
+  3. JavaScript in Code Blocks needs a Business plan or higher. Without
+     it the page still renders, but the slider, FAQ and form won't work.
+  4. Fill in CONFIG at the top of the <script> to connect the form.
+  5. Search for "TODO" to find the content placeholders still to fill.
+
+  Every class and id starts with "fc-" and every CSS rule is scoped under
+  .fc-root, so the Squarespace header, footer and navigation are untouched.
+=====================================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+
+<style>
+.fc-root{
+  --fc-green:#1F5C45; --fc-green-dk:#123C2C; --fc-ink:#16211D; --fc-ink-2:#3E4A45;
+  --fc-muted:#55625C; --fc-paper:#F6F5F0; --fc-white:#FFFFFF; --fc-line:#DEDCD3;
+  --fc-field:#B9BFBA; --fc-mint:#E3ECE6; --fc-lime:#C9E36B; --fc-on-dark:#C9D3CE;
+  --fc-err:#A3261B; --fc-focus:#2C5BD6;
+  --fc-serif:"Newsreader", Georgia, "Times New Roman", serif;
+  --fc-sans:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family:var(--fc-sans); font-size:17px; line-height:1.6; color:var(--fc-ink);
+  background:var(--fc-paper); text-align:left; -webkit-font-smoothing:antialiased;
+  width:100%; overflow-wrap:break-word;
+}
+/* Local reset: neutralises Squarespace site styles inside this block only */
+.fc-root *,.fc-root *::before,.fc-root *::after{box-sizing:border-box}
+.fc-root h1,.fc-root h2,.fc-root h3,.fc-root p,.fc-root ul,.fc-root ol,.fc-root dl,.fc-root dd,.fc-root fieldset,.fc-root legend,.fc-root address{margin:0;padding:0;border:0}
+.fc-root ul,.fc-root ol{list-style:none}
+.fc-root li{margin:0;padding:0}
+.fc-root li::before{content:none}
+.fc-root h1,.fc-root h2{font-family:var(--fc-serif);font-weight:500;line-height:1.1;letter-spacing:-.01em;text-transform:none;color:inherit}
+.fc-root h3{font-family:var(--fc-sans);font-weight:700;font-size:21px;line-height:1.3;letter-spacing:0;text-transform:none;color:inherit}
+.fc-root h1{font-size:clamp(38px,6vw,64px);line-height:1.04}
+.fc-root h2{font-size:clamp(32px,4.2vw,48px)}
+.fc-root p,.fc-root li,.fc-root dd,.fc-root dt,.fc-root address{font-size:inherit;line-height:inherit;letter-spacing:normal;color:inherit}
+.fc-root a{color:var(--fc-green);text-decoration:underline;text-underline-offset:2px}
+.fc-root a:hover{color:var(--fc-green-dk)}
+.fc-root button,.fc-root input,.fc-root select,.fc-root textarea{font:inherit;letter-spacing:normal;text-transform:none;color:inherit;margin:0}
+.fc-root :focus-visible{outline:2px solid var(--fc-focus);outline-offset:2px}
+.fc-root [hidden]{display:none!important}
+.fc-root section{scroll-margin-top:110px}
+@media (prefers-reduced-motion:reduce){.fc-root *{transition:none!important}}
+
+.fc-wrap{max-width:1240px;margin:0 auto;padding-inline:24px}
+.fc-root .fc-lede{color:var(--fc-ink-2);font-size:19px;max-width:600px}
+.fc-root .fc-small{font-size:14px;color:var(--fc-muted)}
+
+/* Buttons */
+.fc-root .fc-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:14px 28px;border-radius:999px;font-weight:700;font-size:17px;line-height:1.2;text-decoration:none;text-align:center;cursor:pointer;border:1.5px solid transparent;transition:background .15s,transform .15s}
+.fc-root .fc-btn:hover{transform:translateY(-1px)}
+.fc-root .fc-btn-primary{background:var(--fc-green);color:var(--fc-white)}
+.fc-root .fc-btn-primary:hover{background:var(--fc-green-dk);color:var(--fc-white)}
+.fc-root .fc-btn-outline{background:transparent;color:var(--fc-ink);border-color:var(--fc-ink);font-weight:600}
+.fc-root .fc-btn-outline:hover{color:var(--fc-ink);background:rgba(22,33,29,.05)}
+.fc-root .fc-btn-lime{background:var(--fc-lime);color:var(--fc-ink)}
+.fc-root .fc-btn-lime:hover{color:var(--fc-ink);background:#D6EC84}
+.fc-root .fc-btn-outline-light{background:transparent;color:var(--fc-paper);border-color:var(--fc-paper);font-weight:600}
+.fc-root .fc-btn-outline-light:hover{color:var(--fc-paper);background:rgba(246,245,240,.08)}
+.fc-root .fc-btn[disabled]{opacity:.6;cursor:wait;transform:none}
+
+/* Top bar (delete this <header> if the Squarespace header already does the job) */
+.fc-top{border-bottom:1px solid var(--fc-line)}
+.fc-top .fc-wrap{display:flex;flex-wrap:wrap;gap:14px 32px;align-items:center;justify-content:space-between;padding-block:18px}
+.fc-root .fc-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--fc-ink)}
+.fc-root .fc-brand:hover{color:var(--fc-ink)}
+.fc-brand-text{display:flex;flex-direction:column;line-height:1.05}
+.fc-brand-name{font-weight:700;font-size:19px}
+.fc-brand-sub{font-size:12px;color:var(--fc-muted);letter-spacing:.12em;text-transform:uppercase}
+.fc-brand img{display:block;height:40px;width:auto}
+.fc-nav{display:flex;flex-wrap:wrap;gap:6px 26px;align-items:center;font-size:15px;font-weight:500}
+.fc-root .fc-nav a:not(.fc-btn){color:var(--fc-ink);text-decoration:none}
+.fc-root .fc-nav a:not(.fc-btn):hover{color:var(--fc-green)}
+.fc-root .fc-nav .fc-btn{min-height:44px;padding:10px 22px;font-size:15px;font-weight:600}
+@media (max-width:760px){.fc-nav .fc-nav-link{display:none}}
+
+/* Hero */
+.fc-hero .fc-wrap{display:flex;flex-wrap:wrap;gap:48px;align-items:stretch;padding-block:72px 64px}
+.fc-hero-copy{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:24px;justify-content:center}
+.fc-pill{align-self:flex-start;background:var(--fc-mint);color:var(--fc-green);font-weight:600;font-size:14px;padding:6px 14px;border-radius:999px}
+.fc-root .fc-hero h1 em{font-style:italic;color:var(--fc-green)}
+.fc-ctas{display:flex;flex-wrap:wrap;gap:12px}
+
+/* Loan amount picker */
+.fc-picker{flex:1 1 380px;min-width:0;background:var(--fc-ink);color:var(--fc-paper);border-radius:20px;padding:36px;display:flex;flex-direction:column;gap:22px}
+.fc-root .fc-picker h2{font-family:var(--fc-sans);font-size:20px;font-weight:600;letter-spacing:0}
+.fc-amount{font-family:var(--fc-serif);font-size:56px;line-height:1;color:var(--fc-white)}
+.fc-range-label{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#B9C5BF}
+.fc-root input[type=range]{width:100%;height:28px;accent-color:var(--fc-green);background:transparent;padding:0;border:0}
+.fc-root .fc-picker input[type=range]{accent-color:var(--fc-lime)}
+.fc-range-ends{display:flex;justify-content:space-between;font-size:13px;color:#B9C5BF;margin-top:-12px}
+.fc-picker-rows{display:flex;flex-direction:column;gap:10px;border-top:1px solid #33413B;padding-top:18px;font-size:15px}
+.fc-picker-rows div{display:flex;justify-content:space-between;gap:12px}
+.fc-picker-rows span:first-child{color:#B9C5BF}
+.fc-picker-rows span:last-child{font-weight:600;text-align:right}
+.fc-root .fc-picker .fc-fine{font-size:12px;color:#9DAAA4}
+
+/* Facts strip */
+.fc-facts{background:var(--fc-white);border-block:1px solid var(--fc-line)}
+.fc-facts .fc-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:24px;padding-block:28px}
+.fc-fact{display:flex;flex-direction:column}
+.fc-fact strong{font-family:var(--fc-serif);font-weight:500;font-size:40px;line-height:1.1;color:var(--fc-green)}
+.fc-fact span{color:var(--fc-muted);font-size:15px}
+
+/* Section shells */
+.fc-pad{padding-block:96px}
+.fc-head{display:flex;flex-wrap:wrap;gap:16px 48px;align-items:flex-end;justify-content:space-between;margin-bottom:48px}
+.fc-root .fc-head h2{max-width:640px}
+.fc-root .fc-head p{color:var(--fc-ink-2);max-width:440px}
+
+/* Why cards */
+.fc-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.fc-card{background:var(--fc-white);border:1px solid var(--fc-line);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:14px}
+.fc-root .fc-card p{color:var(--fc-ink-2);font-size:16px}
+
+/* Decade band */
+.fc-decade{background:var(--fc-green);color:var(--fc-paper)}
+.fc-decade .fc-wrap{display:flex;flex-wrap:wrap;gap:48px;align-items:center}
+.fc-decade-num{flex:1 1 300px;min-width:0}
+.fc-decade-num b{display:block;font-family:var(--fc-serif);font-weight:500;font-size:clamp(110px,14vw,168px);line-height:.9;color:var(--fc-lime)}
+.fc-decade-num span{font-size:18px;font-weight:600}
+.fc-decade-copy{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:18px}
+.fc-root .fc-decade-copy h2{font-size:clamp(30px,3.8vw,44px);line-height:1.12}
+.fc-root .fc-decade-copy p{color:#DCE6E0;font-size:18px}
+
+/* Process */
+.fc-process{background:var(--fc-white);border-block:1px solid var(--fc-line)}
+.fc-root .fc-process h2{margin-bottom:44px}
+.fc-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:32px;margin-bottom:44px}
+.fc-step{display:flex;flex-direction:column;gap:10px;border-top:3px solid var(--fc-green);padding-top:20px}
+.fc-step-n{font-weight:700;color:var(--fc-green)}
+.fc-root .fc-step h3{font-size:22px}
+.fc-root .fc-step p{color:var(--fc-ink-2);font-size:16px}
+.fc-row-cta{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+
+/* Brokers */
+.fc-brokers .fc-wrap{padding-block:80px}
+.fc-broker-card{background:var(--fc-ink);color:var(--fc-paper);border-radius:20px;padding:clamp(28px,4vw,48px);display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between}
+.fc-broker-copy{flex:999 1 520px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.fc-eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--fc-lime)}
+.fc-root .fc-broker-copy h2{font-size:clamp(28px,3.2vw,38px);line-height:1.15}
+.fc-root .fc-broker-copy p{color:var(--fc-on-dark)}
+.fc-broker-ctas{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:12px}
+
+/* FAQ */
+.fc-faq .fc-wrap{max-width:860px;padding-block:16px 96px;display:flex;flex-direction:column;gap:12px}
+.fc-root .fc-faq h2{margin-bottom:20px}
+.fc-faq details{background:var(--fc-white);border:1px solid var(--fc-line);border-radius:12px;padding:20px 24px}
+.fc-faq summary{cursor:pointer;list-style:none;font-weight:700;font-size:18px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.fc-faq summary::-webkit-details-marker{display:none}
+.fc-faq summary::after{content:"+";font-size:24px;line-height:1;color:var(--fc-green);transition:transform .2s}
+.fc-faq details[open] summary::after{transform:rotate(45deg)}
+.fc-root .fc-faq details p{margin-top:12px;color:var(--fc-ink-2)}
+
+/* ---------- Apply ---------- */
+.fc-apply{background:var(--fc-paper);border-top:1px solid var(--fc-line)}
+.fc-apply .fc-wrap{max-width:1100px;padding-block:72px 80px;display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}
+.fc-apply-aside{flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:22px}
+.fc-root .fc-apply-aside h2{font-size:clamp(34px,3.6vw,44px);line-height:1.08}
+.fc-root .fc-apply-aside > p{color:var(--fc-ink-2)}
+.fc-ticks{display:flex;flex-direction:column;gap:12px;font-size:15px}
+.fc-ticks li{display:flex;gap:10px;align-items:center}
+.fc-progress{border-top:1px solid var(--fc-line);padding-top:20px;display:flex;flex-direction:column;gap:10px}
+.fc-progress li{display:flex;gap:12px;align-items:center;font-size:15px;color:var(--fc-muted)}
+.fc-progress .fc-dot{width:28px;height:28px;border-radius:50%;border:1px solid #8E9893;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex:none}
+.fc-progress li.fc-on{color:var(--fc-ink);font-weight:700}
+.fc-progress li.fc-on .fc-dot{background:var(--fc-green);border-color:var(--fc-green);color:var(--fc-white);font-weight:700}
+.fc-apply-main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.fc-panel{background:var(--fc-white);border:1px solid var(--fc-line);border-radius:20px;padding:clamp(22px,3.5vw,36px);display:flex;flex-direction:column;gap:24px}
+.fc-root .fc-panel h3{font-size:24px}
+.fc-root .fc-panel-intro{color:var(--fc-ink-2);font-size:15px;margin-top:-16px}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.fc-full{grid-column:1/-1}
+.fc-field{display:flex;flex-direction:column;gap:6px;font-size:16px;font-weight:700}
+.fc-root .fc-field input,.fc-root .fc-field select,.fc-root .fc-field textarea{font-weight:400;font-size:16px;padding:13px;border:1px solid var(--fc-field);border-radius:10px;background:var(--fc-white);color:var(--fc-ink);width:100%;min-width:0;box-shadow:none;height:auto;line-height:1.4;appearance:auto}
+.fc-root .fc-field textarea{resize:vertical;min-height:72px}
+.fc-root .fc-field input:focus,.fc-root .fc-field select:focus,.fc-root .fc-field textarea:focus{outline:2px solid var(--fc-focus);outline-offset:0;border-color:transparent}
+.fc-root .fc-field .fc-invalid{border-color:var(--fc-err);outline:1px solid var(--fc-err)}
+.fc-root .fc-legend{font-weight:700;font-size:16px;margin-bottom:12px;display:block}
+.fc-big-amount{font-family:var(--fc-serif);font-weight:500;font-size:48px;line-height:1;color:var(--fc-green)}
+.fc-range-ends-light{display:flex;justify-content:space-between;font-size:13px;color:var(--fc-muted);margin-top:-4px}
+.fc-choices{display:flex;flex-wrap:wrap;gap:10px}
+.fc-choices-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.fc-root .fc-choice{min-height:44px;padding:11px 18px;border-radius:999px;border:1px solid var(--fc-field);background:var(--fc-white);color:var(--fc-ink);cursor:pointer;font-size:16px;font-weight:500;text-align:left;box-shadow:inset 0 0 0 1px transparent}
+.fc-root .fc-choices-grid .fc-choice{border-radius:12px;min-height:52px;padding:14px 16px}
+.fc-root .fc-choice[aria-pressed="true"]{border-color:var(--fc-green);box-shadow:inset 0 0 0 1px var(--fc-green);background:var(--fc-mint);font-weight:700}
+.fc-panel-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.fc-panel-nav .fc-spacer{flex:1}
+.fc-root .fc-alert{color:var(--fc-err);font-weight:700}
+.fc-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px 32px}
+.fc-summary div{display:flex;flex-direction:column;gap:2px;border-bottom:1px solid #E8E6DE;padding-bottom:10px}
+.fc-root .fc-summary dt{font-size:14px;color:var(--fc-muted)}
+.fc-root .fc-summary dd{font-weight:600;white-space:pre-line}
+.fc-consent{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--fc-ink-2);cursor:pointer}
+.fc-root .fc-consent input{width:22px;height:22px;margin-top:2px;flex:none;accent-color:var(--fc-green)}
+.fc-hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+.fc-done{background:var(--fc-ink);color:var(--fc-paper);border-radius:20px;padding:48px clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.fc-root .fc-done h3{font-family:var(--fc-serif);font-weight:500;font-size:clamp(30px,3.4vw,40px);line-height:1.1}
+.fc-root .fc-done p{color:var(--fc-on-dark)}
+.fc-ref{font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--fc-lime);font-weight:600}
+.fc-root .fc-notice{background:#2E2817;color:#F1E7CF;border-radius:8px;padding:10px 12px;font-size:14px}
+.fc-payload{width:100%;max-height:280px;overflow:auto;white-space:pre;background:#0E1613;color:#C9D3CE;border-radius:8px;padding:12px;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;margin:0}
+
+/* Contact + footer */
+.fc-contact{background:var(--fc-mint)}
+.fc-contact .fc-wrap{padding-block:80px;display:flex;flex-wrap:wrap;gap:40px;align-items:center;justify-content:space-between}
+.fc-contact-copy{flex:999 1 520px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.fc-root .fc-contact-copy p{color:var(--fc-ink-2)}
+.fc-root .fc-contact address{flex:1 1 280px;min-width:0;font-style:normal;display:flex;flex-direction:column;gap:6px;color:var(--fc-ink-2)}
+.fc-root .fc-contact address strong{color:var(--fc-ink)}
+.fc-foot{background:var(--fc-ink);color:#9DAAA4;font-size:14px}
+.fc-foot .fc-wrap{padding-block:36px;display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between}
+.fc-foot-legal{display:flex;flex-direction:column;gap:6px;max-width:680px}
+.fc-foot-legal b{color:var(--fc-paper);font-weight:600}
+.fc-foot nav{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-start}
+.fc-root .fc-foot a{color:var(--fc-paper)}
+
+@media (max-width:640px){
+  .fc-pad{padding-block:64px}
+  .fc-hero .fc-wrap{padding-block:48px}
+  .fc-picker{padding:26px}
+  .fc-amount{font-size:46px}
+  .fc-root .fc-btn{width:100%}
+  .fc-root .fc-nav .fc-btn,.fc-root .fc-panel-nav .fc-btn{width:auto}
+}
+</style>
+
+<div class="fc-root" id="fc-root">
+
+  <!-- ============ TOP BAR (optional) ============
+       Delete this <header> if you use the normal Squarespace site header. -->
+  <header class="fc-top">
+    <div class="fc-wrap">
+      <a class="fc-brand" href="#fc-top">
+        <!-- LOGO: this SVG is the design's placeholder "F" mark. To use your real logo,
+             upload it in Squarespace (any Image Block → upload → right-click → Copy image
+             address, or Design → Custom CSS → Manage Custom Files), then replace the <svg>
+             and the text spans below with:
+             <img src="https://placehold.co/180x40/1F5C45/F6F5F0?text=Fidelity+Capital" alt="Fidelity Capital">
+             swapping the placehold.co URL for your images.squarespace-cdn.com URL. -->
+        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="8" fill="#1F5C45"/><path d="M11 26V10h14M11 18h10" stroke="#F6F5F0" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="fc-brand-text"><span class="fc-brand-name">Fidelity Capital</span><span class="fc-brand-sub">Private lending · Est. 2015</span></span>
+      </a>
+      <nav class="fc-nav" aria-label="Page sections">
+        <a class="fc-nav-link" href="#fc-why">Why Fidelity</a>
+        <a class="fc-nav-link" href="#fc-process">How it works</a>
+        <a class="fc-nav-link" href="#fc-brokers">Brokers</a>
+        <a class="fc-nav-link" href="#fc-faq">FAQ</a>
+        <a class="fc-nav-link" href="tel:0282151620"><strong>(02) 8215 1620</strong></a>
+        <a class="fc-btn fc-btn-primary" href="#fc-apply">Apply Now</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="fc-hero" id="fc-top">
+    <div class="fc-wrap">
+      <div class="fc-hero-copy">
+        <span class="fc-pill">Over 10 years lending to Australian businesses</span>
+        <h1>Private lending, built around <em>your</em> circumstances.</h1>
+        <p class="fc-lede">Business loans from <strong>$50,000 to $2 million</strong>, secured by property. Simple deals approved and funded within 48 hours – and complex ones structured with care, not turned away.</p>
+        <div class="fc-ctas">
+          <a class="fc-btn fc-btn-primary" href="#fc-apply">Apply Now</a>
+          <a class="fc-btn fc-btn-outline" href="tel:0282151620">Speak to a lender</a>
+        </div>
+        <p class="fc-small">Applying takes about 5 minutes and doesn’t commit you to anything.</p>
+      </div>
+
+      <div class="fc-picker">
+        <h2>How much do you need?</h2>
+        <div class="fc-amount" id="fc-hero-amount" aria-live="polite">$350k</div>
+        <label class="fc-range-label">Loan amount
+          <input type="range" id="fc-hero-range" min="50000" max="2000000" step="25000" value="350000">
+        </label>
+        <div class="fc-range-ends" aria-hidden="true"><span>$50k</span><span>$2m</span></div>
+        <div class="fc-picker-rows">
+          <div><span>Within our lending range</span><span>Yes – within $50k to $2m</span></div>
+          <div><span>Simple deals funded</span><span>Within 48 hours</span></div>
+        </div>
+        <a class="fc-btn fc-btn-lime" href="#fc-apply" id="fc-hero-start">Start my application</a>
+        <p class="fc-fine">Indicative only. All loans subject to assessment and approval.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FACTS ============ -->
+  <section class="fc-facts" aria-label="Key facts">
+    <div class="fc-wrap">
+      <div class="fc-fact"><strong>10+ years</strong><span>in the private lending market</span></div>
+      <div class="fc-fact"><strong>$50k – $2m</strong><span>loan size</span></div>
+      <div class="fc-fact"><strong>48 hours</strong><span>to funding on simple deals</span></div>
+      <div class="fc-fact"><strong>1 conversation</strong><span>with the people who decide</span></div>
+    </div>
+  </section>
+
+  <!-- ============ WHY FIDELITY ============ -->
+  <section class="fc-pad" id="fc-why">
+    <div class="fc-wrap">
+      <div class="fc-head">
+        <h2>Why businesses choose Fidelity Capital</h2>
+        <p>When the banks say no, or simply can’t move fast enough, we look at the whole picture – not just a credit score.</p>
+      </div>
+      <div class="fc-cards">
+        <div class="fc-card">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M8 18l12-9 12 9v14H8z" stroke="#1F5C45" stroke-width="2.4" stroke-linejoin="round"/><path d="M16 32v-8h8v8" stroke="#1F5C45" stroke-width="2.4" stroke-linejoin="round"/></svg>
+          <h3>Mortgages tailored to your circumstances</h3>
+          <p>First and second mortgages and caveat loans shaped around your situation – including past credit issues, ATO debt or a new business without two years of financials.</p>
+        </div>
+        <div class="fc-card">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="21" r="12" stroke="#1F5C45" stroke-width="2.4"/><path d="M20 14v7l5 3M16 5h8" stroke="#1F5C45" stroke-width="2.4" stroke-linecap="round"/></svg>
+          <h3>Fast approvals, funded in 48 hours</h3>
+          <p>Decisions are made in-house. For straightforward deals we can approve and release funds within 48 hours – ideal for settlements, tax deadlines and time-critical opportunities.</p>
+        </div>
+        <div class="fc-card">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="5" y="20" width="13" height="13" rx="2" stroke="#1F5C45" stroke-width="2.4"/><rect x="22" y="20" width="13" height="13" rx="2" stroke="#1F5C45" stroke-width="2.4"/><path d="M11.5 20v-5h17v5M20 15V7" stroke="#1F5C45" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Collateralisation for complex needs</h3>
+          <p>Not enough equity in one asset? We can combine several properties or assets – including those of directors or third-party guarantors – to secure the funding you need.</p>
+        </div>
+        <div class="fc-card">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="14" r="6" stroke="#1F5C45" stroke-width="2.4"/><path d="M8 34c1.5-6.5 6.5-10 12-10s10.5 3.5 12 10" stroke="#1F5C45" stroke-width="2.4" stroke-linecap="round"/></svg>
+          <h3>Funding tailored to you</h3>
+          <p>No rigid checklists. Loan amount, term and structure are set around your business and your exit plan, with every cost spelled out before you commit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DECADE BAND ============ -->
+  <section class="fc-decade fc-pad">
+    <div class="fc-wrap">
+      <div class="fc-decade-num"><b>10+</b><span>years in the market</span></div>
+      <div class="fc-decade-copy">
+        <h2>A decade of saying yes when it matters.</h2>
+        <p>Since 2015, Fidelity Capital has been a boutique private mortgage fund focused on one thing: practical, imaginative finance for Australia’s small and medium businesses. We’ve funded businesses through partnership break-ups, administrations, redundancies and rapid growth – and we’ve stayed small enough to know every deal personally.</p>
+        <!-- TODO (optional): add a proof point, e.g. total loans funded or number of businesses helped.
+        <p>[Proof point]</p> -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROCESS ============ -->
+  <section class="fc-process fc-pad" id="fc-process">
+    <div class="fc-wrap">
+      <h2>From application to funds in three steps</h2>
+      <ol class="fc-steps">
+        <li class="fc-step"><span class="fc-step-n">Step 1 · 5 minutes</span><h3>Apply online</h3><p>Tell us how much you need, what it’s for and what security is available. No documents needed to start.</p></li>
+        <li class="fc-step"><span class="fc-step-n">Step 2 · same day</span><h3>Talk to a decision-maker</h3><p>We call you, talk through your scenario and send clear indicative terms – rate, fees, term and conditions.</p></li>
+        <li class="fc-step"><span class="fc-step-n">Step 3 · from 48 hours</span><h3>Get funded</h3><p>Once you accept, we finalise documents and release funds – within 48 hours for simple deals.</p></li>
+      </ol>
+      <div class="fc-row-cta">
+        <a class="fc-btn fc-btn-primary" href="#fc-apply">Apply Now</a>
+        <span class="fc-small">Have ID, your ABN and the security property details handy.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BROKERS ============ -->
+  <section class="fc-brokers" id="fc-brokers">
+    <div class="fc-wrap">
+      <div class="fc-broker-card">
+        <div class="fc-broker-copy">
+          <span class="fc-eyebrow">Brokers, accountants &amp; lawyers</span>
+          <h2>Got a client the banks can’t help?</h2>
+          <p>Send us the scenario. You’ll get a straight answer quickly, and we’ll keep you in the loop through to settlement.</p>
+        </div>
+        <div class="fc-broker-ctas">
+          <a class="fc-btn fc-btn-lime" href="#fc-apply" data-fc-role="A broker / accountant / adviser">Submit a scenario</a>
+          <a class="fc-btn fc-btn-outline-light" href="tel:0282151620">Call (02) 8215 1620</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="fc-faq" id="fc-faq">
+    <div class="fc-wrap">
+      <h2>Common questions</h2>
+      <details><summary>How much can I borrow?</summary><p>From $50,000 up to $2 million, depending on the security available and your exit strategy.</p></details>
+      <details><summary>How fast can I get funds?</summary><p>For simple deals – clear security and a straightforward structure – we can fund within 48 hours of approval. More complex deals take a little longer, and we’ll tell you the timeline up front.</p></details>
+      <details><summary>Can you help if the bank has said no?</summary><p>Often, yes. We focus on the security and how the loan will be repaid, so credit history, tax debts or a short trading history don’t automatically rule you out.</p></details>
+      <details><summary>What is collateralisation?</summary><p>It means using more than one property or asset as security for a single loan. It can unlock funding when no single asset has enough equity on its own.</p></details>
+      <!-- TODO: replace the bracketed text with your establishment, legal and valuation fees. -->
+      <details><summary>What fees apply?</summary><p>[List establishment, legal and valuation fees.] Every cost is set out in your indicative terms before you commit.</p></details>
+    </div>
+  </section>
+
+  <!-- ============ APPLY (multi-step form) ============ -->
+  <section class="fc-apply" id="fc-apply">
+    <div class="fc-wrap">
+      <aside class="fc-apply-aside">
+        <h2>Apply for business finance</h2>
+        <p>About 5 minutes. No documents needed to start and no obligation – a lender will call you to talk it through.</p>
+        <ul class="fc-ticks">
+          <li><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="#1F5C45" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Loans from $50k to $2m</li>
+          <li><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="#1F5C45" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Simple deals funded within 48 hours</li>
+          <li><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="#1F5C45" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Over 10 years in the market</li>
+        </ul>
+        <ol class="fc-progress" id="fc-progress" aria-label="Application progress">
+          <li class="fc-on"><span class="fc-dot">1</span>Your loan</li>
+          <li><span class="fc-dot">2</span>Security</li>
+          <li><span class="fc-dot">3</span>Your details</li>
+          <li><span class="fc-dot">4</span>Review</li>
+        </ol>
+      </aside>
+
+      <div class="fc-apply-main">
+        <form id="fc-form" novalidate>
+          <!-- Honeypot: bots fill this, people never see it -->
+          <div class="fc-hp" aria-hidden="true"><label for="fc-website">Leave blank</label><input type="text" id="fc-website" name="website_url" tabindex="-1" autocomplete="off"></div>
+          <input type="hidden" name="amount" id="fc-amount" value="350000">
+          <input type="hidden" name="facility" id="fc-facility" value="">
+          <input type="hidden" name="timing" id="fc-timing" value="">
+          <input type="hidden" name="role" id="fc-role" value="The business owner">
+
+          <!-- STEP 1 -->
+          <div class="fc-panel" data-fc-step="1">
+            <h3>Your loan</h3>
+            <div>
+              <label class="fc-field" for="fc-range">How much do you need?
+                <span class="fc-big-amount" id="fc-form-amount" aria-live="polite">$350k</span>
+              </label>
+              <input type="range" id="fc-range" min="50000" max="2000000" step="25000" value="350000" style="margin-top:10px">
+              <div class="fc-range-ends-light" aria-hidden="true"><span>$50k</span><span>$2m</span></div>
+            </div>
+            <fieldset>
+              <legend class="fc-legend">Which loan suits you?</legend>
+              <div class="fc-choices-grid" data-fc-group="facility">
+                <button type="button" class="fc-choice" aria-pressed="false">1st mortgage</button>
+                <button type="button" class="fc-choice" aria-pressed="false">2nd mortgage</button>
+                <button type="button" class="fc-choice" aria-pressed="false">Caveat loan</button>
+                <button type="button" class="fc-choice" aria-pressed="false">Sale &amp; rent back</button>
+                <button type="button" class="fc-choice" aria-pressed="false">Not sure – help me choose</button>
+              </div>
+            </fieldset>
+            <label class="fc-field">What is it for?
+              <select name="purpose">
+                <option value="">Select…</option><option>Working capital / cash flow</option><option>Refinance existing debt</option><option>ATO / tax debt</option><option>Property purchase or settlement</option><option>Business purchase or growth</option><option>Equipment or plant</option><option>Other</option>
+              </select>
+            </label>
+            <fieldset>
+              <legend class="fc-legend">When do you need the funds?</legend>
+              <div class="fc-choices" data-fc-group="timing">
+                <button type="button" class="fc-choice" aria-pressed="false">Within 48 hours</button>
+                <button type="button" class="fc-choice" aria-pressed="false">Within 2 weeks</button>
+                <button type="button" class="fc-choice" aria-pressed="false">1–3 months</button>
+                <button type="button" class="fc-choice" aria-pressed="false">Just exploring</button>
+              </div>
+            </fieldset>
+            <div class="fc-panel-nav"><span class="fc-spacer"></span><button type="button" class="fc-btn fc-btn-primary" data-fc-next>Continue</button></div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="fc-panel" data-fc-step="2" hidden>
+            <h3>Security</h3>
+            <p class="fc-panel-intro">Estimates are fine. You can list more than one property – we can combine assets to secure the loan.</p>
+            <div class="fc-grid">
+              <label class="fc-field fc-full">Property address(es)
+                <textarea name="address" rows="2" placeholder="Street, suburb, state, postcode – one per line"></textarea></label>
+              <label class="fc-field">Property type
+                <select name="property_type"><option value="">Select…</option><option>Residential</option><option>Commercial</option><option>Industrial</option><option>Vacant land</option><option>Vehicles / plant &amp; equipment</option></select></label>
+              <label class="fc-field">Total estimated value ($)
+                <input type="text" name="security_value" inputmode="numeric" data-fc-money></label>
+              <label class="fc-field">Existing debt owing ($)
+                <input type="text" name="existing_debt" inputmode="numeric" placeholder="0 if none" data-fc-money></label>
+              <label class="fc-field">How will you repay the loan?
+                <select name="exit_strategy"><option value="">Select…</option><option>Refinance with a bank</option><option>Sale of a property</option><option>Business cash flow</option><option>Sale of business / receivable</option><option>Other</option></select></label>
+            </div>
+            <div class="fc-panel-nav">
+              <button type="button" class="fc-btn fc-btn-outline" data-fc-back>Back</button>
+              <button type="button" class="fc-btn fc-btn-primary" data-fc-next>Continue</button>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="fc-panel" data-fc-step="3" hidden>
+            <h3>Your details</h3>
+            <fieldset>
+              <legend class="fc-legend">I am applying as…</legend>
+              <div class="fc-choices" data-fc-group="role">
+                <button type="button" class="fc-choice" aria-pressed="true">The business owner</button>
+                <button type="button" class="fc-choice" aria-pressed="false">A broker / accountant / adviser</button>
+              </div>
+            </fieldset>
+            <div class="fc-grid">
+              <label class="fc-field">Full name *<input type="text" name="full_name" autocomplete="name" data-fc-req></label>
+              <label class="fc-field">Mobile *<input type="tel" name="phone" autocomplete="tel" data-fc-req></label>
+              <label class="fc-field">Email *<input type="email" name="email" autocomplete="email" data-fc-req></label>
+              <label class="fc-field">Business name<input type="text" name="business_name" autocomplete="organization"></label>
+              <label class="fc-field">ABN<input type="text" name="abn" inputmode="numeric"></label>
+              <label class="fc-field fc-full">Tell us about your situation
+                <textarea name="notes" rows="4" placeholder="e.g. deadlines, credit history, why the bank declined"></textarea></label>
+            </div>
+            <p class="fc-alert" role="alert" id="fc-err3" hidden>Please add your name, mobile and a valid email so we can contact you.</p>
+            <div class="fc-panel-nav">
+              <button type="button" class="fc-btn fc-btn-outline" data-fc-back>Back</button>
+              <button type="button" class="fc-btn fc-btn-primary" data-fc-next>Review application</button>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="fc-panel" data-fc-step="4" hidden>
+            <h3>Review &amp; submit</h3>
+            <dl class="fc-summary" id="fc-summary"></dl>
+            <p class="fc-small">Have documents ready (ID, rates notice, loan statements)? Your lender will tell you where to send them after the first call.</p>
+            <label class="fc-consent"><input type="checkbox" name="consent" id="fc-consent">
+              <span>I confirm this loan is for business purposes, and I consent to Fidelity Capital using my information to assess this application under its <a href="https://www.fidelitycapitalaustralia.com.au/privacypolicy" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>
+            <p class="fc-alert" role="alert" id="fc-err4" hidden>Please tick the confirmation box to submit.</p>
+            <div class="fc-panel-nav">
+              <button type="button" class="fc-btn fc-btn-outline" data-fc-back>Back</button>
+              <button type="submit" class="fc-btn fc-btn-primary" id="fc-submit">Submit application</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- SUCCESS -->
+        <div class="fc-done" id="fc-done" hidden tabindex="-1">
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true"><circle cx="28" cy="28" r="26" fill="#C9E36B"/><path d="M17 29l7 7 15-16" stroke="#16211D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3 id="fc-done-title">Thanks – your application is in.</h3>
+          <p>Your reference is <span class="fc-ref" id="fc-ref"></span>. A lender will call within one business day to talk through your <span id="fc-done-amount"></span> application. If it’s urgent, call (02) 8215 1620 and quote the reference.</p>
+          <p class="fc-notice" id="fc-preview-note" hidden>Setup preview: no webhook is configured in CONFIG, so nothing was sent. This is the payload Zapier/Zoho will receive once connected.</p>
+          <pre class="fc-payload" id="fc-payload" hidden></pre>
+          <div class="fc-ctas">
+            <a class="fc-btn fc-btn-lime" href="#fc-top">Back to top</a>
+            <a class="fc-btn fc-btn-outline-light" href="tel:0282151620">Urgent? (02) 8215 1620</a>
+          </div>
+        </div>
+
+        <p class="fc-small" id="fc-privacy-line">Your details are sent securely and used only to assess your application. Submitting does not commit you to a loan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="fc-contact" id="fc-contact">
+    <div class="fc-wrap">
+      <div class="fc-contact-copy">
+        <h2>Let’s find a way to fund it.</h2>
+        <p>Apply online in about 5 minutes, or talk to us first.</p>
+        <div class="fc-ctas">
+          <a class="fc-btn fc-btn-primary" href="#fc-apply">Apply Now</a>
+          <a class="fc-btn fc-btn-outline" href="tel:0282151620">(02) 8215 1620</a>
+        </div>
+      </div>
+      <address>
+        <strong>Fidelity Capital (Australia) Pty Limited</strong>
+        <span>11/65 York Street, Sydney NSW 2000</span>
+        <a href="mailto:info@fidelitygroup.com.au">info@fidelitygroup.com.au</a>
+        <span>Mon–Fri, [9am–5pm]</span> <!-- TODO: confirm business hours -->
+      </address>
+    </div>
+  </section>
+
+  <!-- ============ LEGAL FOOTER BAND ============
+       Kept because it carries the lending disclaimer. The Squarespace site footer is unaffected. -->
+  <footer class="fc-foot">
+    <div class="fc-wrap">
+      <div class="fc-foot-legal">
+        <!-- TODO: add your ABN -->
+        <b>© <span id="fc-year">2026</span> Fidelity Capital (Australia) Pty Limited · ABN [XX XXX XXX XXX]</b>
+        <span>Loans are for business purposes only and are subject to assessment and approval. Rates shown are minimums; terms, conditions, fees and charges apply. 48-hour funding applies to simple deals once approved.</span>
+      </div>
+      <nav aria-label="Legal">
+        <a href="#fc-apply">Apply Now</a>
+        <a href="https://www.fidelitycapitalaustralia.com.au/privacypolicy">Privacy Policy</a>
+        <a href="#">LinkedIn</a> <!-- TODO: LinkedIn company page URL -->
+      </nav>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIG — connect the application form.
+   1. Zapier: create a Zap with trigger "Webhooks by Zapier → Catch Hook",
+      paste its URL below, then add "Zoho CRM → Create/Update Lead".
+   2. Zoho direct (optional): Zoho CRM → Setup → Webforms → Leads. Copy the
+      xnQsjsdp and xmIwtLD values from the generated code. Use
+      crm.zoho.com.au if your Zoho account is in the AU data centre.
+   With neither set, the form shows the payload on screen (setup preview).
+   ===================================================================== */
+var FC_CONFIG = {
+  zapierWebhookUrl: "",            // e.g. "https://hooks.zapier.com/hooks/catch/1234567/abcde12/"
+  zoho: {
+    enabled: false,
+    action: "https://crm.zoho.com.au/crm/WebToLeadForm",
+    xnQsjsdp: "",
+    xmIwtLD: "",
+    actionType: "TGVhZHM=",        // "Leads", base64, as Zoho generates it
+    leadSource: "Website application"
+  }
+};
+
+(function () {
+  var root = document.getElementById("fc-root");
+  if (!root || root.getAttribute("data-fc-ready")) return;
+  root.setAttribute("data-fc-ready", "1");
+
+  function $(s, el) { return (el || root).querySelector(s); }
+  function $$(s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); }
+
+  var form = $("#fc-form"), panes = $$("[data-fc-step]"), progress = $$("#fc-progress li");
+  var step = 1;
+  $("#fc-year").textContent = new Date().getFullYear();
+
+  function fmt(a) {
+    a = Number(a);
+    return a >= 1000000 ? "$" + String(+(a / 1000000).toFixed(2)) + "m" : "$" + Math.round(a / 1000) + "k";
+  }
+  function digits(v) { return Number(String(v || "").replace(/[^\d]/g, "")) || 0; }
+
+  /* Loan amount: hero slider and form slider stay in sync */
+  var heroRange = $("#fc-hero-range"), formRange = $("#fc-range");
+  function setAmount(v) {
+    $("#fc-amount").value = v;
+    heroRange.value = v; formRange.value = v;
+    $("#fc-hero-amount").textContent = fmt(v);
+    $("#fc-form-amount").textContent = fmt(v);
+  }
+  heroRange.addEventListener("input", function () { setAmount(heroRange.value); });
+  formRange.addEventListener("input", function () { setAmount(formRange.value); });
+
+  /* Choice buttons (single select per group) */
+  function pick(group, label) {
+    $$('[data-fc-group="' + group + '"] .fc-choice').forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.textContent.trim() === label));
+    });
+    $("#fc-" + group).value = label;
+  }
+  $$("[data-fc-group]").forEach(function (g) {
+    g.addEventListener("click", function (e) {
+      var b = e.target.closest(".fc-choice");
+      if (b) pick(g.getAttribute("data-fc-group"), b.textContent.trim());
+    });
+  });
+  /* "Submit a scenario" pre-selects the broker role */
+  $$("[data-fc-role]").forEach(function (a) {
+    a.addEventListener("click", function () { pick("role", a.getAttribute("data-fc-role")); });
+  });
+
+  /* Money fields: format on blur */
+  $$("[data-fc-money]").forEach(function (i) {
+    i.addEventListener("blur", function () { var n = digits(i.value); i.value = n ? n.toLocaleString("en-AU") : ""; });
+  });
+
+  /* Steps */
+  function go(n) {
+    step = n;
+    panes.forEach(function (p) { p.hidden = Number(p.getAttribute("data-fc-step")) !== n; });
+    progress.forEach(function (li, i) { li.classList.toggle("fc-on", i < n); });
+    if (n === 4) buildSummary();
+  }
+  function scrollToForm() {
+    var top = $("#fc-apply").getBoundingClientRect().top + window.pageYOffset - 110;
+    window.scrollTo({ top: top, behavior: "smooth" });
+  }
+
+  function validate(n) {
+    if (n === 3) {
+      var ok = true, first = null;
+      $$("[data-fc-req]", panes[2]).forEach(function (f) {
+        var bad = !f.value.trim() || (f.type === "email" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.value.trim()));
+        f.classList.toggle("fc-invalid", bad);
+        f.setAttribute("aria-invalid", String(bad));
+        if (bad) { ok = false; first = first || f; }
+      });
+      $("#fc-err3").hidden = ok;
+      if (first) first.focus();
+      return ok;
+    }
+    if (n === 4) {
+      var c = $("#fc-consent").checked;
+      $("#fc-err4").hidden = c;
+      if (!c) $("#fc-consent").focus();
+      return c;
+    }
+    return true;
+  }
+  form.addEventListener("input", function (e) {
+    if (e.target.classList.contains("fc-invalid")) { e.target.classList.remove("fc-invalid"); e.target.setAttribute("aria-invalid", "false"); }
+    if (e.target.id === "fc-consent") $("#fc-err4").hidden = true;
+  });
+
+  $$("[data-fc-next]").forEach(function (b) {
+    b.addEventListener("click", function () { if (validate(step)) { go(step + 1); scrollToForm(); } });
+  });
+  $$("[data-fc-back]").forEach(function (b) {
+    b.addEventListener("click", function () { go(step - 1); scrollToForm(); });
+  });
+
+  /* Review summary (built with textContent, so user input is never parsed as HTML) */
+  function val(name) { var el = form.elements[name]; return el ? String(el.value || "").trim() : ""; }
+  function d(v) { return v || "—"; }
+  function m(v) { return v ? "$" + v : "—"; }
+  function buildSummary() {
+    var rows = [
+      ["Loan amount", fmt(val("amount"))],
+      ["Loan type", d(val("facility"))],
+      ["Purpose", d(val("purpose"))],
+      ["Funds needed", d(val("timing"))],
+      ["Security", d(val("address"))],
+      ["Property type", d(val("property_type"))],
+      ["Value / existing debt", m(val("security_value")) + " / " + m(val("existing_debt"))],
+      ["Repayment plan", d(val("exit_strategy"))],
+      ["Applicant", d(val("full_name")) + " (" + val("role") + ")"],
+      ["Contact", d(val("phone")) + " · " + d(val("email"))],
+      ["Business", d(val("business_name")) + (val("abn") ? " · ABN " + val("abn") : "")]
+    ];
+    var dl = $("#fc-summary");
+    dl.textContent = "";
+    rows.forEach(function (r) {
+      var wrap = document.createElement("div"), dt = document.createElement("dt"), dd = document.createElement("dd");
+      dt.textContent = r[0]; dd.textContent = r[1];
+      wrap.appendChild(dt); wrap.appendChild(dd); dl.appendChild(wrap);
+    });
+  }
+
+  /* Submission */
+  function refNo() {
+    var t = new Date(), p = function (n) { return String(n).padStart(2, "0"); };
+    return "FC-" + String(t.getFullYear()).slice(2) + p(t.getMonth() + 1) + p(t.getDate()) + "-" + Math.random().toString(36).slice(2, 6).toUpperCase();
+  }
+  function buildPayload(ref) {
+    var o = {}, fd = new FormData(form);
+    fd.forEach(function (v, k) { if (k !== "website_url") o[k] = v; });
+    ["amount", "security_value", "existing_debt"].forEach(function (k) { if (o[k]) o[k] = digits(o[k]); });
+    var parts = (o.full_name || "").trim().split(/\s+/);
+    o.last_name = parts.length > 1 ? parts.pop() : parts[0] || "";
+    o.first_name = parts.length ? parts.join(" ") : "";
+    o.consent = !!o.consent;
+    o.reference = ref;
+    o.submitted_at = new Date().toISOString();
+    o.source_page = location.href.split("#")[0];
+    return o;
+  }
+  function sendZapier(p) {
+    if (!FC_CONFIG.zapierWebhookUrl) return Promise.resolve(false);
+    var body = new URLSearchParams();
+    Object.keys(p).forEach(function (k) { body.append(k, p[k]); });
+    return fetch(FC_CONFIG.zapierWebhookUrl, { method: "POST", mode: "no-cors", body: body })
+      .then(function () { return true; }, function () { return false; });
+  }
+  function sendZoho(p) {
+    var z = FC_CONFIG.zoho;
+    if (!z.enabled || !z.xnQsjsdp || !z.xmIwtLD) return false;
+    var frame = document.getElementById("fc-zoho-sink");
+    if (!frame) { frame = document.createElement("iframe"); frame.name = frame.id = "fc-zoho-sink"; frame.hidden = true; document.body.appendChild(frame); }
+    var f = document.createElement("form");
+    f.action = z.action; f.method = "POST"; f.target = "fc-zoho-sink"; f.hidden = true;
+    var desc = [
+      "Ref: " + p.reference, "Applying as: " + p.role,
+      "Amount: $" + Number(p.amount || 0).toLocaleString("en-AU"), "Loan type: " + (p.facility || "-"),
+      "Purpose: " + (p.purpose || "-"), "Funds needed: " + (p.timing || "-"),
+      "Security: " + (p.address || "-") + " (" + (p.property_type || "-") + ") value $" + (p.security_value || "-") + " debt $" + (p.existing_debt || "-"),
+      "Exit: " + (p.exit_strategy || "-"), "ABN: " + (p.abn || "-"), "Notes: " + (p.notes || "-")
+    ].join("\n");
+    var fields = {
+      xnQsjsdp: z.xnQsjsdp, xmIwtLD: z.xmIwtLD, actionType: z.actionType, returnURL: "null",
+      "First Name": p.first_name, "Last Name": p.last_name, "Email": p.email, "Mobile": p.phone,
+      "Company": p.business_name || "", "Lead Source": z.leadSource, "Description": desc
+    };
+    Object.keys(fields).forEach(function (k) {
+      var i = document.createElement("input"); i.type = "hidden"; i.name = k; i.value = fields[k] == null ? "" : fields[k]; f.appendChild(i);
+    });
+    document.body.appendChild(f); f.submit();
+    setTimeout(function () { f.remove(); }, 2000);
+    return true;
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (step !== 4 || !validate(4)) return;
+    if ($("#fc-website").value) return; // bot trap
+    var btn = $("#fc-submit");
+    btn.disabled = true; btn.textContent = "Sending…";
+    var ref = refNo(), payload = buildPayload(ref);
+    sendZapier(payload).then(function (z1) {
+      var z2 = sendZoho(payload);
+      form.hidden = true; $("#fc-progress").hidden = true; $("#fc-privacy-line").hidden = true;
+      $("#fc-ref").textContent = ref;
+      $("#fc-done-amount").textContent = fmt(payload.amount);
+      $("#fc-done-title").textContent = "Thanks" + (payload.first_name ? " " + payload.first_name : "") + " – your application is in.";
+      if (!z1 && !z2) {
+        $("#fc-preview-note").hidden = false;
+        var pre = $("#fc-payload"); pre.hidden = false; pre.textContent = JSON.stringify(payload, null, 2);
+      }
+      var done = $("#fc-done"); done.hidden = false; done.focus({ preventScroll: true });
+      scrollToForm();
+    });
+  });
+
+  /* "Start my application" carries the slider amount into the form */
+  $("#fc-hero-start").addEventListener("click", function () { setAmount(heroRange.value); go(1); });
+
+  setAmount(350000);
+  go(1);
+})();
+</script>
