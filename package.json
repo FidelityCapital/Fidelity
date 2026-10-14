@@ -1,0 +1,16 @@
+{
+  "name": "fidelity-capital-squarespace",
+  "private": true,
+  "description": "Custom CSS, Code Block snippets and Code Injection scripts for the Fidelity Capital Squarespace 7.1 site.",
+  "type": "module",
+  "scripts": {
+    "build": "node build/build.mjs",
+    "check": "node build/build.mjs --check"
+  },
+  "devDependencies": {
+    "less": "^4.2.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

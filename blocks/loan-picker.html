@@ -1,0 +1,23 @@
+<!--
+  LOAN AMOUNT PICKER  (homepage hero, right-hand column)
+  Paste into a Code Block in the hero section. Display Source: OFF.
+  Behaviour comes from scripts/main.js (Footer Code Injection). Without JS the
+  card still shows a sensible default and the link still works.
+
+  data-apply-url : the Apply page URL. The chosen amount is appended as
+                   ?amount=<n> so the application form opens pre-filled.
+-->
+<div class="fc-component fc-loan" data-fc="loan" data-apply-url="/apply">
+  <h2 class="fc-loan__title">How much do you need?</h2>
+  <output class="fc-loan__amount" data-fc-loan-output for="fc-loan-amount" aria-live="polite">$350k</output>
+  <label class="fc-loan__label">Loan amount
+    <input id="fc-loan-amount" type="range" min="50000" max="2000000" step="25000" value="350000" data-fc-loan-range>
+  </label>
+  <div class="fc-loan__range-ends" aria-hidden="true"><span>$50k</span><span>$2m</span></div>
+  <dl class="fc-loan__facts">
+    <div><dt>Within our lending range</dt><dd>Yes – within $50k to $2m</dd></div>
+    <div><dt>Simple deals funded</dt><dd>Within 48 hours</dd></div>
+  </dl>
+  <a class="fc-btn fc-btn--mint" href="/apply" data-fc-loan-cta>Start my application</a>
+  <p class="fc-loan__note">Indicative only. All loans subject to assessment and approval.</p>
+</div>
