@@ -1,199 +1,182 @@
 <!--
-  APPLY NOW — 4-step application  (page: /apply)
-  Paste into ONE Code Block that is the ONLY block in its section, so the
+  APPLICATION FORM  (Apply section, right column)
+  Paste into a Code Block. Display Source: OFF.
+  It must be the LAST block in its section, with nothing below it, so the
   form can change height between steps without overlapping other blocks.
-  Display Source: OFF.
 
-  BEFORE GOING LIVE: replace REPLACE_WITH_FORM_ENDPOINT in the <form action>
-  with the URL that receives submissions (see docs/IMPLEMENTATION_PLAN.md,
-  "Form backend"). Squarespace does not receive custom HTML forms itself.
+  ── Integration settings (data-* attributes on the root element) ──────────
+  data-zapier-url       Zapier "Webhooks by Zapier → Catch Hook" URL.
+                        Add a Zap action "Zoho CRM → Create/Update Lead".
+  data-zoho-xnqsjsdp    Zoho CRM → Setup → Webforms → Leads → generated code
+  data-zoho-xmiwtld       (copy these two hidden-field values).
+  data-zoho-action      Zoho web-to-lead URL. Use crm.zoho.com.au for the AU
+                        data centre (default below).
+  data-zoho-action-type Leave as TGVhZHM= ("Leads", base64 as Zoho generates it).
+  data-zoho-lead-source Lead Source value written to Zoho.
+  data-debug            Add this attribute ONLY on a test page. If nothing is
+                        configured it then shows the exact payload instead of
+                        an error. Never leave it on the live page.
+  Configure Zapier, Zoho direct, or both. With both, every application lands
+  in Zoho directly AND runs the Zap.
 
-  Without JS: every step shows as one long form that posts normally.
-  With JS (scripts/main.js): one step at a time, validation, review summary,
-  background submit and a thank-you panel.
+  A broker button anywhere on the page can link to "#apply-broker" to open
+  the form with "I'm a broker" pre-selected.
 -->
-<div class="fc-component fc-apply" data-fc="apply">
+<div class="fc-component fc-apply" data-fc="apply"
+     data-zapier-url=""
+     data-zoho-xnqsjsdp=""
+     data-zoho-xmiwtld=""
+     data-zoho-action="https://crm.zoho.com.au/crm/WebToLeadForm"
+     data-zoho-action-type="TGVhZHM="
+     data-zoho-lead-source="Website application">
 
-  <aside class="fc-apply__aside">
-    <h1 class="fc-apply__title">Apply for business finance</h1>
-    <p class="fc-apply__intro">About 5 minutes. No documents needed to start and no obligation – a lender will call you to talk it through.</p>
-    <ul class="fc-apply__ticks">
-      <li><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="#094166" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>Loans from $50k to $2m</li>
-      <li><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="#094166" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>Simple deals funded within 48 hours</li>
-      <li><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5l4 4 8-9" stroke="#094166" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>Over 10 years in the market</li>
-    </ul>
-    <ol class="fc-apply__progress" aria-label="Application progress" data-fc-progress hidden>
-      <li class="is-reached" aria-current="step"><span class="fc-apply__num">1</span>Your loan</li>
-      <li><span class="fc-apply__num">2</span>Security</li>
-      <li><span class="fc-apply__num">3</span>Your details</li>
-      <li><span class="fc-apply__num">4</span>Review</li>
-    </ol>
-  </aside>
+  <p class="fc-apply__nojs">Our online application needs JavaScript. Call us on <a href="tel:0282151620">(02) 8215 1620</a> or email <a href="mailto:info@fidelitygroup.com.au">info@fidelitygroup.com.au</a> and a lender will take your details.</p>
 
-  <form class="fc-apply__form" action="REPLACE_WITH_FORM_ENDPOINT" method="post" enctype="multipart/form-data" novalidate>
-
-    <!-- Honeypot: real people never see or fill this -->
-    <div class="fc-apply__hp" aria-hidden="true">
-      <label>Leave this empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label>
+  <div class="fc-apply__card" id="apply-broker">
+    <div class="fc-apply__who" role="group" aria-label="I am applying as">
+      <button type="button" aria-pressed="true" data-fc-set-who="client">I'm a business owner</button>
+      <button type="button" aria-pressed="false" data-fc-set-who="broker">I'm a broker</button>
     </div>
+    <div class="fc-apply__progress" aria-hidden="true"><span class="is-on"></span><span></span><span></span><span></span></div>
 
-    <!-- STEP 1 -->
-    <section class="fc-apply__step is-active" data-step="1" aria-labelledby="fc-s1">
-      <h2 class="fc-apply__step-title" id="fc-s1" tabindex="-1">Your loan</h2>
+    <form class="fc-apply__form" novalidate>
+      <input type="hidden" name="applicant_type" value="client" data-fc-applicant-type>
+      <div class="fc-apply__hp" aria-hidden="true"><label for="fc-website-url">Leave blank</label><input type="text" id="fc-website-url" name="website_url" tabindex="-1" autocomplete="off"></div>
 
-      <label class="fc-apply__field">How much do you need?
-        <output class="fc-apply__amount" data-fc-amount-output for="fc-amount">$350k</output>
-        <input id="fc-amount" type="range" name="loan_amount" min="50000" max="2000000" step="25000" value="350000">
-      </label>
+      <!-- Step 1: contact -->
+      <div class="fc-apply__pane" data-step="1">
+        <p class="fc-apply__step-label">Step 1 of 4</p>
+        <fieldset>
+          <legend tabindex="-1" data-fc-contact-legend>Your details</legend>
+          <div data-fc-broker-only hidden>
+            <div class="fc-apply__row">
+              <div class="fc-apply__field"><label for="fc-broker-name">Broker name <span class="fc-apply__req">*</span></label><input type="text" id="fc-broker-name" name="broker_name" autocomplete="name" data-req-broker></div>
+              <div class="fc-apply__field"><label for="fc-broker-company">Brokerage <span class="fc-apply__req">*</span></label><input type="text" id="fc-broker-company" name="broker_company" autocomplete="organization" data-req-broker></div>
+            </div>
+            <div class="fc-apply__row">
+              <div class="fc-apply__field"><label for="fc-broker-email">Broker email <span class="fc-apply__req">*</span></label><input type="email" id="fc-broker-email" name="broker_email" autocomplete="email" data-req-broker></div>
+              <div class="fc-apply__field"><label for="fc-broker-phone">Broker mobile <span class="fc-apply__req">*</span></label><input type="tel" id="fc-broker-phone" name="broker_phone" autocomplete="tel" data-req-broker></div>
+            </div>
+            <div class="fc-apply__row">
+              <div class="fc-apply__field"><label for="fc-broker-aggregator">Aggregator</label><input type="text" id="fc-broker-aggregator" name="broker_aggregator"></div>
+              <div class="fc-apply__field"><label for="fc-broker-acl">ACL or credit rep number</label><input type="text" id="fc-broker-acl" name="broker_acl"></div>
+            </div>
+            <p class="fc-apply__step-label">Client contact</p>
+          </div>
+          <div class="fc-apply__row">
+            <div class="fc-apply__field"><label for="fc-first-name">First name <span class="fc-apply__req">*</span></label><input type="text" id="fc-first-name" name="first_name" autocomplete="given-name" required></div>
+            <div class="fc-apply__field"><label for="fc-last-name">Last name <span class="fc-apply__req">*</span></label><input type="text" id="fc-last-name" name="last_name" autocomplete="family-name" required></div>
+          </div>
+          <div class="fc-apply__row">
+            <div class="fc-apply__field"><label for="fc-email">Email <span class="fc-apply__req" data-fc-client-req>*</span></label><input type="email" id="fc-email" name="email" autocomplete="email" data-req-client></div>
+            <div class="fc-apply__field"><label for="fc-phone">Mobile <span class="fc-apply__req" data-fc-client-req>*</span></label><input type="tel" id="fc-phone" name="phone" autocomplete="tel" data-req-client></div>
+          </div>
+          <div class="fc-apply__field"><label for="fc-contact-pref">Best time to call</label>
+            <select id="fc-contact-pref" name="contact_pref"><option>Any time</option><option>Morning</option><option>Afternoon</option><option>After 5pm</option></select></div>
+        </fieldset>
+      </div>
 
-      <fieldset class="fc-apply__choices">
-        <legend>Which loan suits you?</legend>
-        <div class="fc-apply__chips fc-apply__chips--cards">
-          <label class="fc-apply__chip"><input type="radio" name="loan_type" value="1st mortgage"><span>1st mortgage</span></label>
-          <label class="fc-apply__chip"><input type="radio" name="loan_type" value="2nd mortgage"><span>2nd mortgage</span></label>
-          <label class="fc-apply__chip"><input type="radio" name="loan_type" value="Caveat loan"><span>Caveat loan</span></label>
-          <label class="fc-apply__chip"><input type="radio" name="loan_type" value="Sale &amp; rent back"><span>Sale &amp; rent back</span></label>
-          <label class="fc-apply__chip"><input type="radio" name="loan_type" value="Not sure – help me choose"><span>Not sure – help me choose</span></label>
-        </div>
-      </fieldset>
+      <!-- Step 2: business -->
+      <div class="fc-apply__pane" data-step="2" hidden>
+        <p class="fc-apply__step-label">Step 2 of 4</p>
+        <fieldset>
+          <legend tabindex="-1">The business</legend>
+          <div class="fc-apply__row">
+            <div class="fc-apply__field"><label for="fc-business-name">Business name <span class="fc-apply__req">*</span></label><input type="text" id="fc-business-name" name="business_name" autocomplete="organization" required></div>
+            <div class="fc-apply__field"><label for="fc-abn">ABN or ACN <span class="fc-apply__req">*</span></label><input type="text" id="fc-abn" name="abn" inputmode="numeric" placeholder="11 digit ABN" required data-fc-abn></div>
+          </div>
+          <div class="fc-apply__row">
+            <div class="fc-apply__field"><label for="fc-industry">Industry</label>
+              <select id="fc-industry" name="industry"><option value="">Select</option><option>Construction and trades</option><option>Transport and logistics</option><option>Hospitality</option><option>Retail</option><option>Manufacturing</option><option>Professional services</option><option>Health</option><option>Property</option><option>Agriculture</option><option>Other</option></select></div>
+            <div class="fc-apply__field"><label for="fc-years-trading">Time trading</label>
+              <select id="fc-years-trading" name="years_trading"><option value="">Select</option><option>Under 12 months</option><option>1 to 2 years</option><option>2 to 5 years</option><option>5 years or more</option></select></div>
+          </div>
+          <div class="fc-apply__row">
+            <div class="fc-apply__field"><label for="fc-state">State</label>
+              <select id="fc-state" name="state"><option value="">Select</option><option>NSW</option><option>VIC</option><option>QLD</option><option>WA</option><option>SA</option><option>TAS</option><option>ACT</option><option>NT</option></select></div>
+            <div class="fc-apply__field"><label for="fc-monthly-turnover">Average monthly turnover</label><div class="fc-apply__money"><input type="text" id="fc-monthly-turnover" name="monthly_turnover" inputmode="numeric" data-fc-money></div></div>
+          </div>
+          <div class="fc-apply__field"><span class="fc-apply__group-label" id="fc-status-label">Is the business currently in any of these?</span>
+            <div class="fc-apply__chips" role="group" aria-labelledby="fc-status-label">
+              <label><input type="checkbox" name="status" value="ATO payment plan"> ATO payment plan</label>
+              <label><input type="checkbox" name="status" value="ATO debt, no plan"> ATO debt, no plan</label>
+              <label><input type="checkbox" name="status" value="DPN received"> DPN received</label>
+              <label><input type="checkbox" name="status" value="Payday or MCA loans"> Payday or MCA loans</label>
+              <label><input type="checkbox" name="status" value="SBR or administration"> SBR or administration</label>
+              <label><input type="checkbox" name="status" value="Credit defaults"> Credit defaults</label>
+              <label><input type="checkbox" name="status" value="Legal action or winding-up notice"> Legal action / winding-up notice</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
 
-      <label class="fc-apply__field">What is it for?
-        <select name="purpose">
-          <option value="">Select…</option>
-          <option>Working capital / cash flow</option>
-          <option>Refinance existing debt</option>
-          <option>ATO / tax debt</option>
-          <option>Property purchase or settlement</option>
-          <option>Business purchase or growth</option>
-          <option>Equipment or plant</option>
-          <option>Other</option>
-        </select>
-      </label>
+      <!-- Step 3: loan and security -->
+      <div class="fc-apply__pane" data-step="3" hidden>
+        <p class="fc-apply__step-label">Step 3 of 4</p>
+        <fieldset>
+          <legend tabindex="-1">The loan and security</legend>
+          <div class="fc-apply__row">
+            <div class="fc-apply__field"><label for="fc-loan-amount">Amount required <span class="fc-apply__req">*</span></label><div class="fc-apply__money"><input type="text" id="fc-loan-amount" name="loan_amount" inputmode="numeric" required data-fc-money></div></div>
+            <div class="fc-apply__field"><label for="fc-urgency">When are funds needed?</label>
+              <select id="fc-urgency" name="urgency"><option>Within 7 days</option><option>Within 2 weeks</option><option selected>Within a month</option><option>Just exploring</option></select></div>
+          </div>
+          <div class="fc-apply__field"><span class="fc-apply__group-label" id="fc-purpose-label">What is the loan for? <span class="fc-apply__req">*</span></span>
+            <div class="fc-apply__chips" role="group" aria-labelledby="fc-purpose-label" data-fc-purpose>
+              <label><input type="checkbox" name="purpose" value="Pay ATO debt"> Pay ATO debt</label>
+              <label><input type="checkbox" name="purpose" value="Consolidate payday or MCA loans"> Consolidate payday / MCA</label>
+              <label><input type="checkbox" name="purpose" value="Restructure or creditor deal"> Restructure / creditor deal</label>
+              <label><input type="checkbox" name="purpose" value="Working capital"> Working capital</label>
+              <label><input type="checkbox" name="purpose" value="Refinance existing lender"> Refinance a lender</label>
+              <label><input type="checkbox" name="purpose" value="Settlement or purchase"> Settlement / purchase</label>
+              <label><input type="checkbox" name="purpose" value="Other"> Other</label>
+            </div>
+            <span class="fc-apply__err" role="alert" data-fc-purpose-err hidden>Choose at least one purpose.</span>
+          </div>
+          <div class="fc-apply__row">
+            <div class="fc-apply__field"><label for="fc-security-type">Security offered <span class="fc-apply__req">*</span></label>
+              <select id="fc-security-type" name="security_type" required><option value="">Select</option><option>Residential property</option><option>Commercial property</option><option>Vacant land</option><option>Multiple properties</option><option>Third-party property (guarantor)</option><option>Vehicles, plant or equipment</option><option>Not sure yet</option></select></div>
+            <div class="fc-apply__field"><label for="fc-security-postcode">Security postcode</label><input type="text" id="fc-security-postcode" name="security_postcode" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+          </div>
+          <div class="fc-apply__row">
+            <div class="fc-apply__field"><label for="fc-security-value">Estimated value</label><div class="fc-apply__money"><input type="text" id="fc-security-value" name="security_value" inputmode="numeric" data-fc-money></div></div>
+            <div class="fc-apply__field"><label for="fc-existing-debt">Existing debt on it</label><div class="fc-apply__money"><input type="text" id="fc-existing-debt" name="existing_debt" inputmode="numeric" data-fc-money></div><span class="fc-apply__hint" aria-live="polite" data-fc-lvr>Enter both to see the indicative LVR.</span></div>
+          </div>
+          <div class="fc-apply__field"><label for="fc-exit-strategy">Exit strategy</label>
+            <select id="fc-exit-strategy" name="exit_strategy"><option value="">Select</option><option>Refinance to a bank or non-bank</option><option>Sale of property</option><option>Business cash flow</option><option>Sale of business or asset</option><option>Not sure yet</option></select></div>
+        </fieldset>
+      </div>
 
-      <fieldset class="fc-apply__choices">
-        <legend>When do you need the funds?</legend>
-        <div class="fc-apply__chips">
-          <label class="fc-apply__chip"><input type="radio" name="timing" value="Within 48 hours"><span>Within 48 hours</span></label>
-          <label class="fc-apply__chip"><input type="radio" name="timing" value="Within 2 weeks"><span>Within 2 weeks</span></label>
-          <label class="fc-apply__chip"><input type="radio" name="timing" value="1–3 months"><span>1–3 months</span></label>
-          <label class="fc-apply__chip"><input type="radio" name="timing" value="Just exploring"><span>Just exploring</span></label>
-        </div>
-      </fieldset>
+      <!-- Step 4: story and consent -->
+      <div class="fc-apply__pane" data-step="4" hidden>
+        <p class="fc-apply__step-label">Step 4 of 4</p>
+        <fieldset>
+          <legend tabindex="-1">The story</legend>
+          <div class="fc-apply__field"><label for="fc-story">What happened, and what's the plan?</label>
+            <span class="fc-apply__hint">The context banks don't ask for is usually what gets a deal done here. A few sentences is enough.</span>
+            <textarea id="fc-story" name="story"></textarea></div>
+          <div class="fc-apply__field"><label for="fc-heard-from">How did you hear about us?</label>
+            <select id="fc-heard-from" name="heard_from"><option value="">Select</option><option>Broker</option><option>Accountant</option><option>Google</option><option>LinkedIn</option><option>Referral</option><option>Other</option></select></div>
+          <label class="fc-apply__consent"><input type="checkbox" name="consent" value="yes" required data-fc-consent><span>I confirm the information is accurate, the loan is for business purposes, and Fidelity Capital may contact me and store these details in line with its <a href="/privacy-policy">privacy policy</a>. <span class="fc-apply__req">*</span></span></label>
+          <span class="fc-apply__err" role="alert" data-fc-consent-err hidden>Please confirm to submit.</span>
+          <span class="fc-apply__err" role="alert" data-fc-submit-err hidden>Sorry, we couldn't send your application. Please try again or call (02) 8215 1620.</span>
+        </fieldset>
+      </div>
 
-      <div class="fc-apply__actions fc-apply__actions--end" data-fc-nav hidden>
+      <div class="fc-apply__nav">
+        <button type="button" class="fc-btn fc-btn--ghost" data-fc-back hidden>Back</button>
+        <span class="fc-apply__spacer"></span>
         <button type="button" class="fc-btn fc-btn--primary" data-fc-next>Continue</button>
+        <button type="submit" class="fc-btn fc-btn--primary" data-fc-submit hidden>Submit application</button>
       </div>
-    </section>
+    </form>
 
-    <!-- STEP 2 -->
-    <section class="fc-apply__step" data-step="2" aria-labelledby="fc-s2">
-      <h2 class="fc-apply__step-title" id="fc-s2" tabindex="-1">Security</h2>
-      <p class="fc-apply__help">Estimates are fine. You can list more than one property – we can combine assets to secure the loan.</p>
-      <div class="fc-apply__grid">
-        <label class="fc-apply__field fc-apply__full">Property address(es)
-          <textarea name="security_address" rows="2" placeholder="Street, suburb, state, postcode – one per line"></textarea>
-        </label>
-        <label class="fc-apply__field">Property type
-          <select name="property_type">
-            <option value="">Select…</option>
-            <option>Residential</option>
-            <option>Commercial</option>
-            <option>Industrial</option>
-            <option>Vacant land</option>
-            <option>Vehicles / plant &amp; equipment</option>
-          </select>
-        </label>
-        <label class="fc-apply__field">Total estimated value ($)
-          <input type="text" name="security_value" inputmode="numeric">
-        </label>
-        <label class="fc-apply__field">Existing debt owing ($)
-          <input type="text" name="existing_debt" inputmode="numeric" placeholder="0 if none">
-        </label>
-        <label class="fc-apply__field">How will you repay the loan?
-          <select name="exit_strategy">
-            <option value="">Select…</option>
-            <option>Refinance with a bank</option>
-            <option>Sale of a property</option>
-            <option>Business cash flow</option>
-            <option>Sale of business / receivable</option>
-            <option>Other</option>
-          </select>
-        </label>
-      </div>
-      <div class="fc-apply__actions" data-fc-nav hidden>
-        <button type="button" class="fc-btn fc-btn--ghost" data-fc-back>Back</button>
-        <button type="button" class="fc-btn fc-btn--primary" data-fc-next>Continue</button>
-      </div>
-    </section>
-
-    <!-- STEP 3 -->
-    <section class="fc-apply__step" data-step="3" aria-labelledby="fc-s3">
-      <h2 class="fc-apply__step-title" id="fc-s3" tabindex="-1">Your details</h2>
-      <fieldset class="fc-apply__choices">
-        <legend>I am applying as…</legend>
-        <div class="fc-apply__chips">
-          <label class="fc-apply__chip"><input type="radio" name="applicant_role" value="The business owner" checked><span>The business owner</span></label>
-          <label class="fc-apply__chip"><input type="radio" name="applicant_role" value="A broker / accountant / adviser"><span>A broker / accountant / adviser</span></label>
-        </div>
-      </fieldset>
-      <div class="fc-apply__grid">
-        <label class="fc-apply__field">Full name *
-          <input type="text" name="name" autocomplete="name" required>
-        </label>
-        <label class="fc-apply__field">Mobile *
-          <input type="tel" name="phone" autocomplete="tel" required>
-        </label>
-        <label class="fc-apply__field">Email *
-          <input type="email" name="email" autocomplete="email" required>
-        </label>
-        <label class="fc-apply__field">Business name
-          <input type="text" name="business_name" autocomplete="organization">
-        </label>
-        <label class="fc-apply__field">ABN
-          <input type="text" name="abn" inputmode="numeric">
-        </label>
-        <label class="fc-apply__field fc-apply__full">Tell us about your situation
-          <textarea name="notes" rows="4" placeholder="e.g. deadlines, credit history, why the bank declined"></textarea>
-        </label>
-      </div>
-      <p class="fc-apply__error" role="alert" data-fc-error hidden>Please add your name, mobile and email so we can contact you.</p>
-      <div class="fc-apply__actions" data-fc-nav hidden>
-        <button type="button" class="fc-btn fc-btn--ghost" data-fc-back>Back</button>
-        <button type="button" class="fc-btn fc-btn--primary" data-fc-next>Review application</button>
-      </div>
-    </section>
-
-    <!-- STEP 4 -->
-    <section class="fc-apply__step" data-step="4" aria-labelledby="fc-s4">
-      <h2 class="fc-apply__step-title" id="fc-s4" tabindex="-1">Review &amp; submit</h2>
-      <dl class="fc-apply__summary" data-fc-summary hidden></dl>
-      <label class="fc-apply__field">Upload documents (optional)
-        <span class="fc-apply__hint">ID, rates notice, loan statements – or send them later.</span>
-        <input type="file" name="documents" multiple>
-      </label>
-      <label class="fc-apply__consent">
-        <input type="checkbox" name="consent" value="yes" required>
-        <span>I confirm this loan is for business purposes, and I consent to Fidelity Capital using my information to assess this application under its <a href="/privacy-policy">Privacy Policy</a>.</span>
-      </label>
-      <p class="fc-apply__error" role="alert" data-fc-error hidden>Please tick the confirmation box to submit.</p>
-      <p class="fc-apply__error" role="alert" data-fc-submit-error hidden>Sorry – we couldn’t send your application. Please try again, or call us on <a href="tel:0282151620">(02) 8215 1620</a>.</p>
-      <div class="fc-apply__actions">
-        <button type="button" class="fc-btn fc-btn--ghost" data-fc-back data-fc-nav hidden>Back</button>
-        <button type="submit" class="fc-btn fc-btn--primary" data-fc-submit>Submit application</button>
-      </div>
-    </section>
-
-    <!-- STEP 5: confirmation (JS only) -->
-    <section class="fc-apply__done" data-fc-done hidden tabindex="-1" aria-live="polite">
-      <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true"><circle cx="28" cy="28" r="26" fill="#A9D0C4"></circle><path d="M17 29l7 7 15-16" stroke="#0B2236" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-      <h2>Thanks <span data-fc-done-name></span> – your application is in.</h2>
-      <p>A lender will call you within [X business hours] to talk through your <span data-fc-done-amount></span> application. A copy has been sent to <span data-fc-done-email></span>.</p>
-      <div class="fc-apply__actions">
-        <a class="fc-btn fc-btn--mint" href="/">Back to website</a>
-        <a class="fc-btn fc-btn--ghost-dark" href="tel:0282151620">Urgent? (02) 8215 1620</a>
-      </div>
-    </section>
-
-    <p class="fc-apply__fineprint" data-fc-fineprint>Your details are sent securely and used only to assess your application. Submitting does not commit you to a loan.</p>
-  </form>
+    <div class="fc-apply__done" data-fc-done tabindex="-1" hidden>
+      <span class="fc-eyebrow">Application received</span>
+      <h3>Thanks, we have your file.</h3>
+      <p>Your reference is <span class="fc-apply__ref" data-fc-ref></span>. A lender will call within one business day. If it's urgent, call <span class="fc-num">(02) 8215 1620</span> and quote the reference.</p>
+      <p class="fc-apply__notice" data-fc-preview-note hidden>Preview mode: no integration is configured, so nothing was sent. Below is the exact payload Zapier and Zoho will receive once it is set up.</p>
+      <pre class="fc-apply__payload" data-fc-payload hidden></pre>
+      <div><button type="button" class="fc-btn fc-btn--ghost" data-fc-restart>Start another application</button></div>
+    </div>
+  </div>
 </div>

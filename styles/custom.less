@@ -1,201 +1,205 @@
 // =============================================================================
-// Fidelity Capital — Squarespace 7.1 Custom CSS
-// Paste the WHOLE file into: Website > Pages > Custom Code > Custom CSS
-// (Squarespace compiles LESS server-side; no build step is required.)
+// Fidelity Capital: "Mortgage fund" redesign for Squarespace 7.1
+// Paste the WHOLE file into the Custom CSS panel. Squarespace compiles LESS
+// server-side, so no build step is needed.
+//
+// Look: credit-file aesthetic. Ink-navy on paper, brass for money figures,
+// Young Serif display, Public Sans body, IBM Plex Mono for numbers/labels.
 //
 // Compatibility rules for Squarespace's LESS compiler:
-//   - Only variables, nesting, `&` and literal media queries are used.
+//   - Only variables, nesting, `&` and literal media queries.
 //   - Anything containing math (clamp/calc/min/max) is escaped with ~"…".
-//   - Section targeting uses :has() on hook elements (see blocks/section-hooks.html).
+//   - Sections are targeted with :has() on hook elements
+//     (see blocks/section-hooks.html).
 //
 // Breakpoints follow Squarespace 7.1 Fluid Engine:
-//   mobile  ≤ 767px   (Fluid Engine switches to its 8-column mobile grid)
-//   tablet  768–1023px
-//   desktop ≥ 1024px
+//   mobile ≤ 767px (Fluid Engine's 8-column mobile grid), desktop ≥ 768px.
+//   Components inside Code Blocks use auto-fit grids, so they adapt to the
+//   width of their block rather than the viewport.
 // =============================================================================
 
 
 // -----------------------------------------------------------------------------
 // 1. Tokens
 // -----------------------------------------------------------------------------
-@fc-ink:        #0B2236;  // headings, dark panels, footer
-@fc-blue:       #094166;  // primary brand / buttons
-@fc-blue-dark:  #062C47;  // hover
-@fc-sage:       #528075;  // italic accent in headings
-@fc-mint:       #A9D0C4;  // CTA on dark
-@fc-mint-tint:  #E3EEEA;  // pills, selected states, contact band
-@fc-bg:         #F4F7F8;  // page ground
-@fc-white:      #FFFFFF;
-@fc-line:       #D9E1E6;  // borders on light
-@fc-line-dark:  #22466A;  // borders on dark
-@fc-field:      #B3BEC8;  // input borders
-@fc-text:       #3B4857;  // body copy on light
-@fc-muted:      #526070;  // captions on light (4.5:1 on #F4F7F8)
-@fc-on-dark:    #C8D5E0;  // body copy on dark
-@fc-on-dark-2:  #B6C6D4;  // captions on dark
-@fc-error:      #A3261B;
+@fc-paper:       #F7F6F2;  // page ground
+@fc-paper-2:     #EEECE4;  // apply band, "after" row
+@fc-card:        #FFFFFF;
+@fc-ink:         #121B2E;  // headings, primary text
+@fc-ink-2:       #3B4458;  // body copy
+@fc-muted:       #6A7184;  // captions, labels
+@fc-line:        #D9D6CB;  // hairlines
+@fc-navy:        #16264A;  // primary buttons, brokers band
+@fc-navy-ink:    #F4F2EA;  // text on navy
+@fc-navy-ink-2:  #C3C5C7;  // body on navy (78%)
+@fc-navy-ink-3:  #B6B9BD;  // captions on navy (72%)
+@fc-navy-line:   #3E4B67;  // hairlines on navy (18%)
+@fc-brass:       #9A7428;  // eyebrows, money accents
+@fc-brass-light: #D4AE5E;  // brass on navy
+@fc-brass-soft:  #F1E7CF;  // tags, checked chips
+@fc-good:        #2F6B4F;
+@fc-bad:         #A3412E;
+@fc-focus:       #2C5BD6;
 
-@fc-sans:  "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
-@fc-serif: "Newsreader", Georgia, "Times New Roman", serif;
+@fc-display: "Young Serif", Georgia, "Times New Roman", serif;
+@fc-body:    "Public Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+@fc-mono:    "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+@fc-radius:  6px;
 
 :root {
-  --fc-ink: @fc-ink;
-  --fc-blue: @fc-blue;
-  --fc-radius-card: 16px;
-  --fc-radius-panel: 20px;
-  // Fluid type: scales between 375px and 1440px viewports, never below the
-  // mobile floor, so Squarespace's own mobile scaling is not compounded.
-  --fc-h1: ~"clamp(2.5rem, 1.75rem + 3.2vw, 4rem)";        // 40 → 64px
-  --fc-h2: ~"clamp(2rem, 1.55rem + 1.9vw, 3rem)";          // 32 → 48px
-  --fc-stat: ~"clamp(2rem, 1.7rem + 1.2vw, 2.5rem)";       // 32 → 40px
-  --fc-bignum: ~"clamp(6rem, 3.5rem + 10vw, 10.5rem)";     // 96 → 168px
-  --fc-lead: ~"clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem)"; // 17 → 19px
-  --fc-header-offset: 96px; // scroll-margin for anchor links under the header
+  // Fluid type with a mobile floor. Only applied inside hooked sections, so
+  // Site Styles' own responsive scaling still governs every other page.
+  --fc-h1: ~"clamp(2.3rem, 1.6rem + 3.2vw, 4rem)";      // 37 → 64px
+  --fc-h2: ~"clamp(1.8rem, 1.45rem + 1.6vw, 2.6rem)";   // 29 → 42px
+  --fc-lede: 1.14rem;
+  --fc-header-offset: 84px; // keeps #anchor targets clear of the sticky header
 }
 
 
 // -----------------------------------------------------------------------------
-// 2. Global foundations (keep light — Site Styles still owns the base cascade)
+// 2. Global foundations
 // -----------------------------------------------------------------------------
 
 // Stops any stray wide element from forcing mobile browsers to zoom the page
-// out. `clip` (not `hidden`) keeps the sticky header working.
+// out. `clip` (unlike `hidden`) keeps the sticky header working.
 #siteWrapper {
   overflow-x: clip;
 }
 
 body {
-  font-family: @fc-sans;
+  font-family: @fc-body;
   color: @fc-ink;
+  -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
-h1, h2 {
-  font-family: @fc-serif;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+h1, h2, h3 {
+  font-family: @fc-display;
+  font-weight: 400;
+  line-height: 1.12;
+  text-wrap: balance;
 }
 
-h3, h4 {
-  font-family: @fc-sans;
-  font-weight: 700;
-}
-
-h1 em, h2 em {
-  color: @fc-sage;
-}
-
-.sqs-html-content a,
-.sqs-block-html a {
-  color: @fc-blue;
-  &:hover { color: @fc-blue-dark; }
-}
-
-::selection {
-  background: @fc-mint;
-  color: @fc-ink;
+h4 {
+  font-family: @fc-body;
+  font-weight: 600;
 }
 
 :focus-visible {
-  outline: 3px solid @fc-blue;
-  outline-offset: 3px;
+  outline: 2px solid @fc-focus;
+  outline-offset: 2px;
 }
 
-// Long emails/URLs must wrap rather than widen the viewport.
+::selection {
+  background: @fc-brass-soft;
+  color: @fc-ink;
+}
+
+// Long emails/URLs wrap instead of widening the viewport.
 .sqs-html-content {
   overflow-wrap: anywhere;
 }
 
 
 // -----------------------------------------------------------------------------
-// 3. Buttons (native Button blocks, header CTA, form submit)
+// 3. Buttons: square-ish (6px), not pills
 // -----------------------------------------------------------------------------
 .sqs-block-button-element,
 .header-actions-action--cta .btn,
 .sqs-block-form .form-button-wrapper button {
-  font-family: @fc-sans !important;
+  font-family: @fc-body !important;
   font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
-  border-radius: 999px !important;
+  border-radius: @fc-radius !important;
   min-height: 44px;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .sqs-button-element--primary,
 .header-actions-action--cta .btn,
 .sqs-block-form .form-button-wrapper button {
-  background-color: @fc-blue !important;
-  color: @fc-white !important;
-  border: 0;
-  &:hover { background-color: @fc-blue-dark !important; }
+  background-color: @fc-navy !important;
+  color: @fc-navy-ink !important;
+  border: 1px solid transparent;
+  &:hover { transform: translateY(-1px); }
 }
 
-// Secondary = outlined ("Speak to a lender", phone buttons)
+// Secondary = ghost ("I'm a broker")
 .sqs-button-element--secondary {
   background-color: transparent !important;
   color: @fc-ink !important;
-  border: 1.5px solid @fc-ink !important;
-  &:hover {
-    background-color: @fc-ink !important;
-    color: @fc-white !important;
-  }
+  border: 1px solid @fc-line !important;
+  &:hover { border-color: @fc-ink-2 !important; }
 }
 
 
 // -----------------------------------------------------------------------------
 // 4. Header
 // -----------------------------------------------------------------------------
-#header .header-background-solid,
-#header .header-inner {
-  background-color: @fc-white;
-}
-
 #header {
   border-bottom: 1px solid @fc-line;
 }
 
-.header-nav-item > a,
-.header-nav-folder-title {
-  font-family: @fc-sans;
-  font-size: 15px;
-  font-weight: 500;
+#header .header-background-solid,
+#header .header-inner {
+  background-color: @fc-paper;
+}
+
+// Text wordmark + "Est. 2015" (Site Title as text, no logo image)
+.header-title-text a {
+  font-family: @fc-display;
+  font-weight: 400;
+  font-size: 1.35rem;
   color: @fc-ink;
-}
-
-// Phone number added to navigation as a `tel:` link
-.header-nav-item > a[href^="tel:"] {
-  font-weight: 600;
-}
-
-.header-actions-action--cta .btn {
-  padding: 12px 22px !important;
-  font-size: 15px !important;
-}
-
-// Mobile overlay menu
-.header-menu {
-  background-color: @fc-white;
-  .header-menu-nav-item a {
-    font-family: @fc-serif;
-    color: @fc-ink;
+  white-space: nowrap;
+  &::after {
+    content: "Est. 2015";
+    margin-left: 0.45em;
+    font-family: @fc-mono;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: @fc-muted;
   }
 }
 
-@media screen and (max-width: 767px) {
-  .header-title-logo img {
-    max-height: 48px;
+.header-nav-item > a,
+.header-nav-folder-title {
+  font-family: @fc-body;
+  font-size: 0.94rem;
+  color: @fc-ink-2;
+  &:hover { color: @fc-ink; }
+}
+
+// Phone number added to the navigation as a `tel:` link
+.header-nav-item > a[href^="tel:"] {
+  font-family: @fc-mono;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.header-actions-action--cta .btn {
+  padding: 0.7em 1em !important;
+  font-size: 0.9rem !important;
+}
+
+.header-menu {
+  background-color: @fc-paper;
+  .header-menu-nav-item a {
+    font-family: @fc-display;
+    color: @fc-ink;
   }
 }
 
 
 // -----------------------------------------------------------------------------
 // 5. Section hooks
-// A hook is an empty element dropped into a section via a Code Block:
+// A hook is an empty element dropped into a section through a Code Block:
 //   <div class="fc-hook fc-hook--hero" id="top"></div>
-// It names the section for CSS (.page-section:has(.fc-hook--hero)) and acts
-// as the anchor target for in-page nav links.
+// It names the section for CSS (.page-section:has(.fc-hook--hero)) and is the
+// target for in-page nav links.
 // -----------------------------------------------------------------------------
 .fc-hook {
   display: block;
@@ -203,7 +207,7 @@ h1 em, h2 em {
   scroll-margin-top: var(--fc-header-offset);
 }
 
-// The hook's own block must not take space or catch clicks. It stays rendered
+// The hook's block takes no space and ignores clicks. It stays rendered
 // (not display:none) so #anchor links keep working.
 .fe-block:has(.fc-hook),
 .sqs-block-code:has(.fc-hook) {
@@ -212,34 +216,23 @@ h1 em, h2 em {
   padding: 0 !important;
 }
 
-// Visible label in the editor only, so editors can find and move hooks.
+// Editor-only label so hooks are easy to find and move.
 body.sqs-edit-mode-active .fc-hook {
   height: auto;
   &::before {
     content: "Section hook: " attr(data-label);
     display: inline-block;
-    font: 600 12px/1.4 @fc-sans;
+    font: 500 12px/1.4 @fc-mono;
     padding: 2px 8px;
-    border: 1px dashed @fc-blue;
+    border: 1px dashed @fc-brass;
     border-radius: 4px;
-    background: @fc-white;
-    color: @fc-blue;
+    background: @fc-card;
+    color: @fc-brass;
   }
 }
 
-// Shared section rhythm
-.page-section:has(.fc-hook) {
-  .sqs-html-content h2 {
-    font-size: var(--fc-h2);
-    line-height: 1.1;
-  }
-  .sqs-html-content p {
-    color: @fc-text;
-  }
-}
-
-// Dynamic-height components (loan picker, apply form) must be able to grow
-// their Fluid Engine row instead of overlapping the next block.
+// Dynamic-height components (apply form) grow their Fluid Engine row instead
+// of overlapping the next block.
 .fe-block:has(.fc-component) {
   height: auto;
   align-self: start;
@@ -247,669 +240,676 @@ body.sqs-edit-mode-active .fc-hook {
 
 
 // -----------------------------------------------------------------------------
-// 6. Homepage sections
+// 6. Shared rules for every hooked section
+// Content conventions used in the editor:
+//   eyebrow   = a paragraph directly above an H1/H2
+//   lede      = paragraph style "Paragraph 1" (large)
+//   fine print= paragraph style "Paragraph 3" (small)
+//   side note = Quote (blockquote)
+// -----------------------------------------------------------------------------
+.page-section:has(.fc-hook) {
+  .section-background {
+    background-color: @fc-paper;
+    border-top: 1px solid @fc-line;
+  }
+
+  .sqs-html-content {
+    color: @fc-ink-2;
+
+    h1 { font-size: var(--fc-h1); letter-spacing: -0.01em; color: @fc-ink; }
+    h2 { font-size: var(--fc-h2); color: @fc-ink; }
+    h3 { font-size: 1.3rem; color: @fc-ink; }
+
+    > p:first-child:has(+ h1),
+    > p:first-child:has(+ h2) {
+      margin: 0 0 12px;
+      font-family: @fc-mono;
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: @fc-brass;
+    }
+
+    p.sqsrte-large {
+      font-size: var(--fc-lede);
+      line-height: 1.6;
+      color: @fc-ink-2;
+      max-width: 60ch;
+    }
+
+    p.sqsrte-small {
+      font-size: 0.8rem;
+      color: @fc-muted;
+      max-width: 80ch;
+    }
+
+    blockquote {
+      margin: 0;
+      padding: 0 0 0 14px;
+      border-left: 2px solid @fc-brass;
+      font-size: 0.92rem;
+      font-style: normal;
+      color: @fc-ink-2;
+      &::before, &::after { content: none; }
+    }
+
+    // "<strong>Label</strong><br>text" pattern: drop the line break because
+    // the label becomes a block.
+    strong + br { display: none; }
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// 7. Sections
 // -----------------------------------------------------------------------------
 
-// 6.1 Hero ---------------------------------------------------------------------
+// 7.1 Hero: italic words in the H1 render upright in brass -------------------
 .page-section:has(.fc-hook--hero) {
-  .section-background { background-color: @fc-bg; }
-
-  .sqs-html-content h1 {
-    font-size: var(--fc-h1);
-    line-height: 1.04;
-    color: @fc-ink;
-  }
-
-  // Eyebrow pill = the paragraph directly above the H1
-  .sqs-html-content > p:first-child:has(+ h1) {
-    display: inline-block;
-    margin: 0 0 24px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: @fc-mint-tint;
-    color: @fc-blue;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-
-  // Lead paragraph directly after the H1
-  .sqs-html-content h1 + p {
-    font-size: var(--fc-lead);
-    color: @fc-text;
-    max-width: 600px;
+  .section-background { border-top: 0; }
+  .sqs-html-content h1 em {
+    font-style: normal;
+    color: @fc-brass;
   }
 }
 
-// 6.2 Facts strip ----------------------------------------------------------------
-.page-section:has(.fc-hook--facts) {
-  .section-background {
-    background-color: @fc-white;
-    border-top: 1px solid @fc-line;
-    border-bottom: 1px solid @fc-line;
-  }
-  .sqs-html-content h3 {
-    font-family: @fc-serif;
-    font-weight: 500;
-    font-size: var(--fc-stat);
-    line-height: 1.1;
-    color: @fc-blue;
-    margin: 0;
-  }
-  .sqs-html-content h3 + p {
-    margin: 0;
-    font-size: 15px;
-    color: @fc-muted;
-  }
-}
-
-// 6.3 Why Fidelity — every text block with an H3 renders as a card ------------
-.page-section:has(.fc-hook--why) {
-  .section-background { background-color: @fc-bg; }
-
-  .fe-block:has(.sqs-block-html h3) {
-    background: @fc-white;
+// 7.2 What we fund: text blocks shaped "code / H3 / paragraph" become cards
+.page-section:has(.fc-hook--situations) {
+  .fe-block:has(.sqs-html-content > p:first-child + h3) {
+    background: @fc-card;
     border: 1px solid @fc-line;
-    border-radius: var(--fc-radius-card);
+    border-radius: @fc-radius;
     .sqs-block {
-      padding: 32px !important;
+      padding: 26px 24px !important;
       height: 100%;
       box-sizing: border-box;
     }
-    h3 { font-size: 21px; margin: 0 0 14px; color: @fc-ink; }
-    p  { font-size: 16px; }
-  }
-
-  // Optional icon above the card text (Image block with an SVG from assets/icons)
-  .fe-block:has(.sqs-block-image img[src*="fc-icon"]) img {
-    width: 40px !important;
-    height: 40px !important;
-    object-fit: contain;
-  }
-
-  @media screen and (max-width: 767px) {
-    .fe-block:has(.sqs-block-html h3) .sqs-block {
-      padding: 24px !important;
+    .sqs-html-content {
+      > p:first-child {
+        margin: 0 0 10px;
+        font-family: @fc-mono;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        color: @fc-brass;
+      }
+      h3 { margin: 0 0 10px; }
+      p:not(:first-child) { font-size: 0.95rem; }
     }
   }
 }
 
-// 6.4 A decade (dark band) -----------------------------------------------------
-.page-section:has(.fc-hook--decade) {
-  .section-background { background-color: @fc-blue; }
-
-  .sqs-html-content h2 { color: @fc-white; font-size: ~"clamp(2rem, 1.6rem + 1.6vw, 2.75rem)"; line-height: 1.12; }
-  .sqs-html-content p  { color: #DCE6EE; font-size: 18px; }
-}
-
-// Big decorative number — Code Block component (blocks/decade-stat.html)
-.fc-bignum {
-  margin: 0;
-  font-family: @fc-serif;
-  font-size: var(--fc-bignum);
-  line-height: 0.9;
-  color: @fc-mint;
-  span {
-    display: block;
-    margin-top: 8px;
-    font-family: @fc-sans;
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: @fc-bg;
-  }
-}
-
-// 6.5 Process --------------------------------------------------------------------
-.page-section:has(.fc-hook--process) {
-  .section-background {
-    background-color: @fc-white;
+// 7.3 Facilities: one text block per facility, laid out as a 3-column row:
+//   H3 name | <strong>rate</strong><br>caption | <strong>Case</strong><br>story
+.page-section:has(.fc-hook--facilities) {
+  .sqs-html-content:has(> h3:first-child + p + p:last-child) {
+    display: grid;
+    grid-template-columns: ~"minmax(0, 1.1fr) minmax(0, 0.6fr) minmax(0, 1.6fr)";
+    gap: 24px;
+    align-items: start;
+    padding: 26px 0;
     border-top: 1px solid @fc-line;
-    border-bottom: 1px solid @fc-line;
-  }
 
-  // Each step = text block with: label paragraph, H3, description
-  .sqs-html-content:has(> p:first-child + h3) {
-    border-top: 3px solid @fc-blue;
-    padding-top: 20px;
-    > p:first-child {
-      margin: 0 0 10px;
-      font-weight: 700;
-      color: @fc-blue;
+    > * { margin: 0; }
+
+    > p:nth-child(2) {
+      font-size: 0.78rem;
+      color: @fc-muted;
+      strong {
+        display: block;
+        font-family: @fc-mono;
+        font-weight: 500;
+        font-size: 1.05rem;
+        color: @fc-ink;
+      }
     }
-    h3 { font-size: 22px; margin: 0 0 10px; }
-    p:not(:first-child) { font-size: 16px; }
+
+    > p:nth-child(3) {
+      font-size: 0.95rem;
+      color: @fc-ink-2;
+      strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: @fc-muted;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
   }
 }
 
-// 6.6 Brokers (navy panel = Shape block placed behind the content) ------------
+// 7.4 Brokers: full-bleed navy band ------------------------------------------
 .page-section:has(.fc-hook--brokers) {
-  .section-background { background-color: @fc-bg; }
-
-  .sqs-block-shape .sqs-shape {
-    fill: @fc-ink;
+  .section-background {
+    background-color: @fc-navy;
+    border-top: 0;
   }
+
   .sqs-html-content {
-    h2 { color: @fc-white; font-size: ~"clamp(1.75rem, 1.45rem + 1.2vw, 2.375rem)"; line-height: 1.15; }
-    p  { color: @fc-on-dark; }
-    // Eyebrow above the H2
-    > p:first-child:has(+ h2) {
-      margin: 0 0 12px;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: @fc-mint;
+    color: @fc-navy-ink-2;
+    h2, h3 { color: @fc-navy-ink; }
+    > p:first-child:has(+ h2) { color: @fc-brass-light; }
+    p.sqsrte-large { color: @fc-navy-ink-2; }
+
+    // Checklist = a bulleted list; each item "<strong>Title</strong><br>detail"
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    ul li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      margin: 0;
+      padding: 14px 0;
+      border-top: 1px solid @fc-navy-line;
+      font-size: 0.92rem;
+      color: @fc-navy-ink-3;
+      &::before {
+        content: "\2713";
+        font-family: @fc-mono;
+        color: @fc-brass-light;
+      }
+      // Squarespace draws its own bullet on the item's first child.
+      > *:first-child::before { content: none !important; display: none !important; }
+      > p { margin: 0; }
+      strong {
+        display: block;
+        font-size: 1rem;
+        font-weight: 600;
+        color: @fc-navy-ink;
+      }
     }
   }
+
   .sqs-button-element--primary {
-    background-color: @fc-mint !important;
-    color: @fc-ink !important;
-    font-weight: 700;
-    &:hover { background-color: @fc-white !important; }
+    background-color: @fc-brass-light !important;
+    color: #16110A !important;
   }
   .sqs-button-element--secondary {
-    color: @fc-bg !important;
-    border-color: @fc-bg !important;
-    &:hover { background-color: @fc-bg !important; color: @fc-ink !important; }
+    color: @fc-navy-ink !important;
+    border-color: @fc-navy-line !important;
   }
 }
 
-// 6.7 FAQ (native Accordion block) -------------------------------------------
-.page-section:has(.fc-hook--faq) {
-  .section-background { background-color: @fc-bg; }
-
-  .accordion-divider { display: none; }
-
-  .accordion-item {
-    background: @fc-white;
-    border: 1px solid @fc-line;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    padding: 0 24px;
-  }
-  .accordion-item__click-target {
-    min-height: 44px;
-    padding: 20px 0;
-  }
-  .accordion-item__title {
-    font-family: @fc-sans;
-    font-size: 18px;
-    font-weight: 700;
-    color: @fc-ink;
-  }
-  .accordion-item__description {
-    padding-bottom: 20px;
-    color: @fc-text;
-  }
-
-  @media screen and (max-width: 767px) {
-    .accordion-item { padding: 0 18px; }
-    .accordion-item__title { font-size: 17px; }
+// 7.5 How it works: text blocks shaped "Step n / H3 / paragraph" --------------
+.page-section:has(.fc-hook--process) {
+  .sqs-html-content:has(> p:first-child + h3) {
+    padding-top: 16px;
+    border-top: 2px solid @fc-ink;
+    > p:first-child {
+      margin: 0 0 8px;
+      font-family: @fc-mono;
+      font-size: 0.8rem;
+      color: @fc-brass;
+    }
+    h3 { margin: 0 0 8px; }
+    p:not(:first-child) { font-size: 0.94rem; }
   }
 }
 
-// 6.8 Contact band -----------------------------------------------------------
+// 7.6 Apply band --------------------------------------------------------------
+.page-section:has(.fc-hook--apply) {
+  .section-background { background-color: @fc-paper-2; }
+}
+
+// 7.7 Contact: text blocks shaped "label / value" ----------------------------
 .page-section:has(.fc-hook--contact) {
-  .section-background { background-color: @fc-mint-tint; }
-  .sqs-html-content strong { color: @fc-ink; }
+  .sqs-html-content:has(> p:first-child + p:last-child) {
+    > p:first-child {
+      margin: 0 0 6px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: @fc-muted;
+    }
+    > p:last-child {
+      margin: 0;
+      font-size: 1.1rem;
+      color: @fc-ink;
+    }
+  }
 }
 
-// 6.9 Footer (hook placed in a footer section) -------------------------------
+// 7.8 Footer -----------------------------------------------------------------
 .page-section:has(.fc-hook--footer) {
-  .section-background { background-color: @fc-ink; }
   .sqs-html-content,
   .sqs-html-content p {
-    color: #9DB0C0;
-    font-size: 14px;
+    font-size: 0.84rem;
+    color: @fc-muted;
   }
-  .sqs-html-content strong { color: @fc-bg; }
-  .sqs-html-content a { color: @fc-bg; }
+  .sqs-html-content a { color: @fc-muted; }
 }
 
 
 // -----------------------------------------------------------------------------
-// 7. Shared component foundations (.fc-component lives in Code Blocks)
+// 8. Shared component foundations (.fc-component lives in Code Blocks)
 // -----------------------------------------------------------------------------
 .fc-component {
-  font-family: @fc-sans;
-  font-size: 17px;
-  line-height: 1.55;
+  font-family: @fc-body;
+  font-size: 16px;
+  line-height: 1.6;
   color: @fc-ink;
-  box-sizing: border-box;
   max-width: 100%;
   min-width: 0;
 
-  *, *::before, *::after { box-sizing: inherit; }
+  *, *::before, *::after { box-sizing: border-box; }
 
-  // Every text-entry control is ≥16px so iOS Safari never auto-zooms on focus.
+  h3 {
+    font-family: @fc-display;
+    font-weight: 400;
+    margin: 0;
+  }
+  p { margin: 0; }
+
+  // Every text-entry control is ≥16px so iOS Safari never zooms in on focus.
   input, select, textarea, button {
     font-family: inherit;
     font-size: 16px;
   }
 
-  input[type="range"] {
-    width: 100%;
-    height: 28px;
-    accent-color: @fc-blue;
-  }
-
   [hidden] { display: none !important; }
+}
+
+.fc-num {
+  font-family: @fc-mono;
+  font-variant-numeric: tabular-nums;
+}
+
+.fc-eyebrow {
+  font-family: @fc-mono;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: @fc-brass;
 }
 
 .fc-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5em;
   min-height: 48px;
-  padding: 14px 30px;
-  border-radius: 999px;
-  border: 0;
-  font-weight: 700;
+  padding: 0.95em 1.3em;
+  border-radius: @fc-radius;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1;
   text-decoration: none !important;
-  text-align: center;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: border-color 0.15s ease, transform 0.15s ease;
 
   &--primary {
-    background: @fc-blue;
-    color: @fc-white !important;
-    &:hover { background: @fc-blue-dark; }
-  }
-  &--mint {
-    background: @fc-mint;
-    color: @fc-ink !important;
-    &:hover { background: @fc-white; }
+    background: @fc-navy;
+    color: @fc-navy-ink !important;
+    &:hover { transform: translateY(-1px); }
+    &:disabled { opacity: 0.7; cursor: progress; transform: none; }
   }
   &--ghost {
-    background: @fc-white;
-    color: @fc-ink !important;
-    border: 1.5px solid @fc-ink;
-  }
-  &--ghost-dark {
     background: transparent;
-    color: @fc-bg !important;
-    border: 1.5px solid @fc-bg;
+    color: @fc-ink !important;
+    border-color: @fc-line;
+    &:hover { border-color: @fc-ink-2; }
   }
 }
 
 
 // -----------------------------------------------------------------------------
-// 8. Loan amount picker (blocks/loan-picker.html)
+// 9. Hero rates strip (blocks/rates.html)
 // -----------------------------------------------------------------------------
-.fc-loan {
-  background: @fc-ink;
-  color: @fc-bg;
-  border-radius: var(--fc-radius-panel);
-  padding: 36px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
+.fc-rates {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid @fc-line;
 
-  &__title {
-    margin: 0;
-    font-family: @fc-sans !important;
-    font-size: 20px !important;
-    font-weight: 600 !important;
-    color: @fc-bg !important;
+  > div {
+    padding: 16px 16px 0 0;
+    min-width: 0;
   }
-  &__amount {
-    font-family: @fc-serif;
-    font-size: ~"clamp(2.75rem, 2.4rem + 1.4vw, 3.5rem)";
-    line-height: 1;
-    color: @fc-white;
+  > div + div {
+    padding-left: 16px;
+    border-left: 1px solid @fc-line;
   }
-  &__label {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 14px;
-    color: @fc-on-dark-2;
+  small {
+    display: block;
+    font-size: 0.78rem;
+    color: @fc-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
-  &__range-ends {
+  strong {
+    font-family: @fc-mono;
+    font-weight: 500;
+    font-size: 1.35rem;
+    color: @fc-ink;
+  }
+  em {
+    font-style: normal;
+    font-size: 0.82rem;
+    color: @fc-muted;
+  }
+
+  @media screen and (max-width: 520px) {
+    grid-template-columns: 1fr;
+    > div { padding: 12px 0; }
+    > div + div {
+      padding-left: 0;
+      border-left: 0;
+      border-top: 1px solid @fc-line;
+    }
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// 10. Deal sheet (blocks/deal-sheet.html)
+// -----------------------------------------------------------------------------
+.fc-sheet {
+  background: @fc-card;
+  border: 1px solid @fc-line;
+  border-radius: @fc-radius;
+  box-shadow: 0 1px 0 @fc-line, 0 18px 40px -24px rgba(10, 20, 40, 0.35);
+  padding: 22px 22px 18px;
+
+  &__head {
     display: flex;
     justify-content: space-between;
-    margin-top: -12px;
-    font-size: 13px;
-    color: @fc-on-dark-2;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 1px dashed @fc-line;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    h3 { font-size: 1.1rem; }
   }
-  &__facts {
-    margin: 0;
-    padding-top: 18px;
-    border-top: 1px solid @fc-line-dark;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    font-size: 15px;
-    > div {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
+  &__tag {
+    font-family: @fc-mono;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3em 0.6em;
+    border-radius: 3px;
+    background: @fc-brass-soft;
+    color: @fc-brass;
+    white-space: nowrap;
+  }
+  &__ledger {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    th {
+      text-align: left;
+      font-weight: 500;
+      color: @fc-muted;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 0;
     }
-    dt { color: @fc-on-dark-2; }
-    dd { margin: 0; font-weight: 600; text-align: right; }
+    td {
+      padding: 7px 0;
+      border-top: 1px solid @fc-line;
+    }
+    th:last-child, td:last-child { text-align: right; padding-left: 12px; }
+    td.fc-num { color: @fc-ink-2; }
+    tr.is-total td {
+      font-weight: 600;
+      color: @fc-ink;
+      border-top: 1px solid @fc-ink-2;
+    }
   }
-  &__note {
-    margin: 0;
-    font-size: 12px;
-    color: #9DB0C0;
+  &__arrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0;
+    color: @fc-muted;
+    font-size: 0.8rem;
+    text-align: center;
+    &::before, &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: @fc-line;
+    }
   }
-  input[type="range"] { accent-color: @fc-mint; }
+  &__after {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    background: @fc-paper-2;
+    border-radius: 4px;
+    padding: 12px 14px;
+    b { font-weight: 600; }
+    .fc-num { font-size: 1.15rem; color: @fc-good; }
+  }
+  &__foot {
+    margin-top: 12px !important;
+    font-size: 0.76rem;
+    color: @fc-muted;
+  }
 
   @media screen and (max-width: 767px) {
-    padding: 24px;
-    gap: 18px;
+    padding: 18px 16px 14px;
   }
 }
 
 
 // -----------------------------------------------------------------------------
-// 9. Apply form (blocks/apply-form.html) — one Code Block, alone in its section
+// 11. Application form (blocks/apply-form.html)
+// Put it in the Apply section as the LAST block, with nothing below it.
 // -----------------------------------------------------------------------------
 .fc-apply {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  align-items: flex-start;
-  padding: 48px 0 80px;
+  scroll-margin-top: var(--fc-header-offset);
 
-  // --- Side panel ---
-  &__aside {
-    flex: 1 1 280px;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-  }
-  &__title {
-    margin: 0;
-    font-size: ~"clamp(2.25rem, 1.95rem + 1.2vw, 2.75rem)" !important;
-    line-height: 1.08;
-  }
-  &__intro { margin: 0; color: @fc-text; }
-
-  &__ticks {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    font-size: 15px;
-    li {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin: 0;
-    }
-    svg { flex: none; }
+  &__card {
+    background: @fc-card;
+    border: 1px solid @fc-line;
+    border-radius: @fc-radius;
+    padding: ~"clamp(18px, 3vw, 32px)";
+    scroll-margin-top: var(--fc-header-offset);
   }
 
-  &__progress {
-    list-style: none;
-    margin: 0;
-    padding: 20px 0 0;
-    border-top: 1px solid @fc-line;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    li {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin: 0;
-      font-size: 15px;
-      color: @fc-muted;
-    }
-    .fc-apply__num {
-      width: 28px;
-      height: 28px;
-      flex: none;
-      border-radius: 50%;
-      border: 1px solid #8C99A6;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
+  // Business owner / broker switch
+  &__who {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 22px;
+    border: 1px solid @fc-line;
+    border-radius: @fc-radius;
+    button {
+      min-height: 44px;
+      padding: 0.8em 0.5em;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: @fc-ink-2;
       font-weight: 600;
-    }
-    li.is-reached {
-      color: @fc-ink;
-      font-weight: 700;
-      .fc-apply__num {
-        background: @fc-blue;
-        border-color: @fc-blue;
-        color: @fc-white;
-        font-weight: 700;
+      cursor: pointer;
+      &[aria-pressed="true"] {
+        background: @fc-navy;
+        color: @fc-navy-ink;
       }
     }
   }
 
-  // --- Form column ---
-  &__form {
-    flex: 999 1 560px;
+  &__progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 22px;
+    span {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: @fc-line;
+      &.is-on { background: @fc-brass; }
+    }
+  }
+
+  &__step-label {
+    margin-bottom: 6px !important;
+    font-family: @fc-mono;
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: @fc-muted;
+  }
+
+  fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin: 0;
-  }
-
-  &__step {
-    background: @fc-white;
-    border: 1px solid @fc-line;
-    border-radius: var(--fc-radius-panel);
-    padding: 36px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    margin: 0;
-    min-width: 0;
-  }
-  &__step-title {
-    margin: 0;
-    font-family: @fc-sans !important;
-    font-size: 24px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0;
-    &:focus { outline: none; }
-  }
-  &__help {
-    margin: -16px 0 0;
-    color: @fc-text;
-    font-size: 15px;
-  }
-
-  &__amount {
-    font-family: @fc-serif;
-    font-weight: 500;
-    font-size: ~"clamp(2.5rem, 2.2rem + 1.2vw, 3rem)";
-    line-height: 1;
-    color: @fc-blue;
-  }
-
-  &__grid {
-    display: grid;
-    grid-template-columns: ~"repeat(auto-fit, minmax(min(100%, 230px), 1fr))";
     gap: 18px;
   }
-  &__full { grid-column: ~"1 / -1"; }
+  legend {
+    padding: 0;
+    margin-bottom: 6px;
+    font-family: @fc-display;
+    font-size: 1.45rem;
+    line-height: 1.2;
+    &:focus { outline: none; }
+  }
+
+  // Two columns that drop to one when the block itself gets narrow
+  &__row {
+    display: grid;
+    grid-template-columns: ~"repeat(auto-fit, minmax(min(100%, 220px), 1fr))";
+    gap: 16px;
+    > * { min-width: 0; }
+  }
 
   &__field {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    font-size: 16px;
-    font-weight: 700;
-    margin: 0;
+    min-width: 0;
+  }
+  &__field > label,
+  &__group-label {
+    font-size: 0.88rem;
+    font-weight: 600;
   }
   &__hint {
-    font-weight: 400;
-    font-size: 14px;
+    font-size: 0.8rem;
     color: @fc-muted;
+  }
+  &__req { color: @fc-bad; }
+  &__err {
+    font-size: 0.8rem;
+    color: @fc-bad;
   }
 
   input[type="text"],
-  input[type="tel"],
   input[type="email"],
+  input[type="tel"],
   select,
   textarea {
     width: 100%;
-    font-weight: 400;
-    padding: 13px;
-    min-height: 48px;
-    border: 1px solid @fc-field;
-    border-radius: 10px;
-    background: @fc-white;
+    min-width: 0;
+    min-height: 46px;
+    padding: 0.72em 0.8em;
+    border: 1px solid @fc-line;
+    border-radius: 4px;
+    background: @fc-paper;
     color: @fc-ink;
     &:focus {
-      border-color: @fc-blue;
-      outline: 2px solid @fc-blue;
+      outline: 2px solid @fc-focus;
       outline-offset: 0;
+      border-color: transparent;
     }
-    &[aria-invalid="true"] { border-color: @fc-error; }
+    &[aria-invalid="true"] { border-color: @fc-bad; }
   }
-  input[type="file"] {
-    width: 100%;
-    padding: 14px;
-    border: 1.5px dashed @fc-field;
-    border-radius: 10px;
-    background: @fc-bg;
+  textarea {
+    min-height: 110px;
+    resize: vertical;
   }
 
-  // Fieldsets of radio "chips"
-  fieldset.fc-apply__choices {
-    border: 0;
-    margin: 0;
-    padding: 0;
-    min-width: 0;
-    legend {
-      font-weight: 700;
-      font-size: 16px;
-      margin-bottom: 12px;
-      padding: 0;
-    }
-  }
   &__chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    &--cards {
-      display: grid;
-      grid-template-columns: ~"repeat(auto-fit, minmax(min(100%, 220px), 1fr))";
-    }
-  }
-  &__chip {
-    position: relative;
-    margin: 0;
-    input {
-      position: absolute;
-      opacity: 0;
-      width: 1px;
-      height: 1px;
-    }
-    span {
-      display: flex;
+    gap: 8px;
+    label {
+      display: inline-flex;
       align-items: center;
+      gap: 8px;
       min-height: 44px;
-      padding: 11px 18px;
-      border: 1px solid @fc-field;
+      padding: 0.45em 0.9em;
+      border: 1px solid @fc-line;
       border-radius: 999px;
-      background: @fc-white;
+      background: @fc-paper;
+      font-size: 0.9rem;
+      font-weight: 500;
       cursor: pointer;
-      font-weight: 400;
+      &:has(input:checked) {
+        border-color: @fc-ink-2;
+        background: @fc-brass-soft;
+      }
     }
-    input:checked + span {
-      border: 2px solid @fc-blue;
-      padding: 10px 17px;
-      background: @fc-mint-tint;
-      font-weight: 700;
-    }
-    input:focus-visible + span {
-      outline: 3px solid @fc-blue;
-      outline-offset: 2px;
+    input {
+      margin: 0;
+      width: 18px;
+      height: 18px;
+      accent-color: @fc-navy;
     }
   }
-  &__chips--cards &__chip span {
-    min-height: 52px;
-    border-radius: 12px;
-    padding: 14px 16px;
-  }
-  &__chips--cards &__chip input:checked + span {
-    padding: 13px 15px;
+
+  &__money {
+    position: relative;
+    &::before {
+      content: "$";
+      position: absolute;
+      left: 0.8em;
+      top: 50%;
+      transform: translateY(-50%);
+      color: @fc-muted;
+      font-family: @fc-mono;
+      pointer-events: none;
+    }
+    input {
+      padding-left: 1.7em !important;
+      font-family: @fc-mono !important;
+    }
   }
 
   &__consent {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    font-size: 15px;
-    color: @fc-text;
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 10px;
+    font-size: 0.86rem;
+    color: @fc-ink-2;
     input {
-      width: 22px;
-      height: 22px;
-      margin-top: 2px;
-      flex: none;
-      accent-color: @fc-blue;
+      width: 20px;
+      height: 20px;
+      margin: 3px 0 0;
+      accent-color: @fc-navy;
     }
   }
 
-  &__error {
-    margin: 0;
-    color: @fc-error;
-    font-weight: 700;
-  }
-
-  &__actions {
+  &__nav {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
     gap: 12px;
-    &--end { justify-content: flex-end; }
+    margin-top: 26px;
   }
+  &__spacer { flex: 1; }
 
-  &__summary {
-    margin: 0;
-    display: grid;
-    grid-template-columns: ~"repeat(auto-fit, minmax(min(100%, 230px), 1fr))";
-    gap: 14px 32px;
-    > div {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      border-bottom: 1px solid #E2E9EE;
-      padding-bottom: 10px;
-      min-width: 0;
-    }
-    dt { font-size: 14px; color: @fc-muted; }
-    dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
-  }
-
-  &__done {
-    background: @fc-ink;
-    color: @fc-bg;
-    border-radius: var(--fc-radius-panel);
-    padding: 48px 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    align-items: flex-start;
-    h2 {
-      margin: 0;
-      color: @fc-bg;
-      font-size: ~"clamp(2rem, 1.7rem + 1.2vw, 2.5rem)" !important;
-      line-height: 1.1;
-    }
-    p { margin: 0; color: @fc-on-dark; }
-  }
-
-  &__fineprint {
-    margin: 0;
-    font-size: 14px;
-    color: @fc-muted;
-  }
-
-  // Spam honeypot — off-screen, not display:none (some bots skip hidden fields)
+  // Spam honeypot: off-screen rather than display:none, because some bots
+  // skip hidden fields.
   &__hp {
     position: absolute !important;
     left: -9999px !important;
@@ -918,27 +918,60 @@ body.sqs-edit-mode-active .fc-hook {
     overflow: hidden;
   }
 
-  // Without JS every step shows as one long form; with JS only one shows.
-  &.is-enhanced &__step:not(.is-active) { display: none; }
+  &__done {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    &:focus { outline: none; }
+    h3 { font-size: 1.5rem; }
+  }
+  &__ref {
+    font-family: @fc-mono;
+    font-size: 1.3rem;
+    color: @fc-brass;
+  }
+  &__notice {
+    padding: 10px 12px;
+    border-radius: 4px;
+    background: @fc-brass-soft;
+    font-size: 0.85rem;
+    color: @fc-ink;
+  }
+  &__payload {
+    max-height: 280px;
+    overflow: auto;
+    margin: 0;
+    padding: 12px;
+    border: 1px solid @fc-line;
+    border-radius: 4px;
+    background: @fc-paper;
+    font-family: @fc-mono;
+    font-size: 0.76rem;
+    white-space: pre;
+    color: @fc-ink-2;
+  }
+
+  // Without JavaScript the form cannot submit, so show the phone/email
+  // fallback instead of a form that goes nowhere.
+  &__nojs { display: block; }
+  &.is-enhanced &__nojs { display: none; }
+  &:not(.is-enhanced) &__card { display: none; }
 
   @media screen and (max-width: 767px) {
-    gap: 28px;
-    padding: 24px 0 56px;
-
-    &__step { padding: 24px 20px; gap: 20px; }
-    &__done { padding: 32px 24px; }
-
-    // Full-width, thumb-reachable buttons; primary action first
-    &__actions {
+    // Full-width, thumb-reachable buttons, with the primary action first
+    &__nav {
       flex-direction: column-reverse;
       .fc-btn { width: 100%; }
     }
+    &__spacer { display: none; }
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .fc-btn,
-  .sqs-block-button-element {
+  .sqs-block-button-element,
+  .header-actions-action--cta .btn {
     transition: none;
+    &:hover { transform: none; }
   }
 }

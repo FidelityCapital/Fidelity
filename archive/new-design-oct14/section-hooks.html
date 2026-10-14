@@ -1,0 +1,29 @@
+<!--
+  SECTION HOOKS
+  Squarespace 7.1 cannot give a section a class or ID. Each hook below is an
+  empty element pasted into a Code Block inside the section it names; the CSS
+  then targets `.page-section:has(.fc-hook--<name>)`.
+
+  How to place one (per section):
+    1. Edit section > Add Block > Code.
+    2. Paste ONE line from below. Turn "Display Source" OFF.
+    3. Shrink the block to 1 row and drag it over the section heading, on BOTH
+       the desktop and mobile Fluid Engine layouts (it takes no space and
+       ignores clicks, so overlapping is fine).
+
+  The `id` doubles as the anchor for nav links, e.g. a nav link to `/#why`.
+  The `data-label` is only shown in the editor so hooks are easy to find.
+-->
+
+<!-- Homepage -->
+<div class="fc-hook fc-hook--hero" id="top" data-label="hero" aria-hidden="true"></div>
+<div class="fc-hook fc-hook--facts" id="facts" data-label="facts" aria-hidden="true"></div>
+<div class="fc-hook fc-hook--why" id="why" data-label="why" aria-hidden="true"></div>
+<div class="fc-hook fc-hook--decade" id="about" data-label="decade" aria-hidden="true"></div>
+<div class="fc-hook fc-hook--process" id="process" data-label="process" aria-hidden="true"></div>
+<div class="fc-hook fc-hook--brokers" id="brokers" data-label="brokers" aria-hidden="true"></div>
+<div class="fc-hook fc-hook--faq" id="faq" data-label="faq" aria-hidden="true"></div>
+<div class="fc-hook fc-hook--contact" id="contact" data-label="contact" aria-hidden="true"></div>
+
+<!-- Footer (Edit Site Footer > the footer section) -->
+<div class="fc-hook fc-hook--footer" data-label="footer" aria-hidden="true"></div>

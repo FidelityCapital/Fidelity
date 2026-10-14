@@ -1,0 +1,944 @@
+// =============================================================================
+// Fidelity Capital — Squarespace 7.1 Custom CSS
+// Paste the WHOLE file into: Website > Pages > Custom Code > Custom CSS
+// (Squarespace compiles LESS server-side; no build step is required.)
+//
+// Compatibility rules for Squarespace's LESS compiler:
+//   - Only variables, nesting, `&` and literal media queries are used.
+//   - Anything containing math (clamp/calc/min/max) is escaped with ~"…".
+//   - Section targeting uses :has() on hook elements (see blocks/section-hooks.html).
+//
+// Breakpoints follow Squarespace 7.1 Fluid Engine:
+//   mobile  ≤ 767px   (Fluid Engine switches to its 8-column mobile grid)
+//   tablet  768–1023px
+//   desktop ≥ 1024px
+// =============================================================================
+
+
+// -----------------------------------------------------------------------------
+// 1. Tokens
+// -----------------------------------------------------------------------------
+@fc-ink:        #0B2236;  // headings, dark panels, footer
+@fc-blue:       #094166;  // primary brand / buttons
+@fc-blue-dark:  #062C47;  // hover
+@fc-sage:       #528075;  // italic accent in headings
+@fc-mint:       #A9D0C4;  // CTA on dark
+@fc-mint-tint:  #E3EEEA;  // pills, selected states, contact band
+@fc-bg:         #F4F7F8;  // page ground
+@fc-white:      #FFFFFF;
+@fc-line:       #D9E1E6;  // borders on light
+@fc-line-dark:  #22466A;  // borders on dark
+@fc-field:      #B3BEC8;  // input borders
+@fc-text:       #3B4857;  // body copy on light
+@fc-muted:      #526070;  // captions on light (4.5:1 on #F4F7F8)
+@fc-on-dark:    #C8D5E0;  // body copy on dark
+@fc-on-dark-2:  #B6C6D4;  // captions on dark
+@fc-error:      #A3261B;
+
+@fc-sans:  "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+@fc-serif: "Newsreader", Georgia, "Times New Roman", serif;
+
+:root {
+  --fc-ink: @fc-ink;
+  --fc-blue: @fc-blue;
+  --fc-radius-card: 16px;
+  --fc-radius-panel: 20px;
+  // Fluid type: scales between 375px and 1440px viewports, never below the
+  // mobile floor, so Squarespace's own mobile scaling is not compounded.
+  --fc-h1: ~"clamp(2.5rem, 1.75rem + 3.2vw, 4rem)";        // 40 → 64px
+  --fc-h2: ~"clamp(2rem, 1.55rem + 1.9vw, 3rem)";          // 32 → 48px
+  --fc-stat: ~"clamp(2rem, 1.7rem + 1.2vw, 2.5rem)";       // 32 → 40px
+  --fc-bignum: ~"clamp(6rem, 3.5rem + 10vw, 10.5rem)";     // 96 → 168px
+  --fc-lead: ~"clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem)"; // 17 → 19px
+  --fc-header-offset: 96px; // scroll-margin for anchor links under the header
+}
+
+
+// -----------------------------------------------------------------------------
+// 2. Global foundations (keep light — Site Styles still owns the base cascade)
+// -----------------------------------------------------------------------------
+
+// Stops any stray wide element from forcing mobile browsers to zoom the page
+// out. `clip` (not `hidden`) keeps the sticky header working.
+#siteWrapper {
+  overflow-x: clip;
+}
+
+body {
+  font-family: @fc-sans;
+  color: @fc-ink;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+h1, h2 {
+  font-family: @fc-serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+h3, h4 {
+  font-family: @fc-sans;
+  font-weight: 700;
+}
+
+h1 em, h2 em {
+  color: @fc-sage;
+}
+
+.sqs-html-content a,
+.sqs-block-html a {
+  color: @fc-blue;
+  &:hover { color: @fc-blue-dark; }
+}
+
+::selection {
+  background: @fc-mint;
+  color: @fc-ink;
+}
+
+:focus-visible {
+  outline: 3px solid @fc-blue;
+  outline-offset: 3px;
+}
+
+// Long emails/URLs must wrap rather than widen the viewport.
+.sqs-html-content {
+  overflow-wrap: anywhere;
+}
+
+
+// -----------------------------------------------------------------------------
+// 3. Buttons (native Button blocks, header CTA, form submit)
+// -----------------------------------------------------------------------------
+.sqs-block-button-element,
+.header-actions-action--cta .btn,
+.sqs-block-form .form-button-wrapper button {
+  font-family: @fc-sans !important;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  border-radius: 999px !important;
+  min-height: 44px;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.sqs-button-element--primary,
+.header-actions-action--cta .btn,
+.sqs-block-form .form-button-wrapper button {
+  background-color: @fc-blue !important;
+  color: @fc-white !important;
+  border: 0;
+  &:hover { background-color: @fc-blue-dark !important; }
+}
+
+// Secondary = outlined ("Speak to a lender", phone buttons)
+.sqs-button-element--secondary {
+  background-color: transparent !important;
+  color: @fc-ink !important;
+  border: 1.5px solid @fc-ink !important;
+  &:hover {
+    background-color: @fc-ink !important;
+    color: @fc-white !important;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// 4. Header
+// -----------------------------------------------------------------------------
+#header .header-background-solid,
+#header .header-inner {
+  background-color: @fc-white;
+}
+
+#header {
+  border-bottom: 1px solid @fc-line;
+}
+
+.header-nav-item > a,
+.header-nav-folder-title {
+  font-family: @fc-sans;
+  font-size: 15px;
+  font-weight: 500;
+  color: @fc-ink;
+}
+
+// Phone number added to navigation as a `tel:` link
+.header-nav-item > a[href^="tel:"] {
+  font-weight: 600;
+}
+
+.header-actions-action--cta .btn {
+  padding: 12px 22px !important;
+  font-size: 15px !important;
+}
+
+// Mobile overlay menu
+.header-menu {
+  background-color: @fc-white;
+  .header-menu-nav-item a {
+    font-family: @fc-serif;
+    color: @fc-ink;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .header-title-logo img {
+    max-height: 48px;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// 5. Section hooks
+// A hook is an empty element dropped into a section via a Code Block:
+//   <div class="fc-hook fc-hook--hero" id="top"></div>
+// It names the section for CSS (.page-section:has(.fc-hook--hero)) and acts
+// as the anchor target for in-page nav links.
+// -----------------------------------------------------------------------------
+.fc-hook {
+  display: block;
+  height: 0;
+  scroll-margin-top: var(--fc-header-offset);
+}
+
+// The hook's own block must not take space or catch clicks. It stays rendered
+// (not display:none) so #anchor links keep working.
+.fe-block:has(.fc-hook),
+.sqs-block-code:has(.fc-hook) {
+  pointer-events: none;
+  min-height: 0;
+  padding: 0 !important;
+}
+
+// Visible label in the editor only, so editors can find and move hooks.
+body.sqs-edit-mode-active .fc-hook {
+  height: auto;
+  &::before {
+    content: "Section hook: " attr(data-label);
+    display: inline-block;
+    font: 600 12px/1.4 @fc-sans;
+    padding: 2px 8px;
+    border: 1px dashed @fc-blue;
+    border-radius: 4px;
+    background: @fc-white;
+    color: @fc-blue;
+  }
+}
+
+// Shared section rhythm
+.page-section:has(.fc-hook) {
+  .sqs-html-content h2 {
+    font-size: var(--fc-h2);
+    line-height: 1.1;
+  }
+  .sqs-html-content p {
+    color: @fc-text;
+  }
+}
+
+// Dynamic-height components (loan picker, apply form) must be able to grow
+// their Fluid Engine row instead of overlapping the next block.
+.fe-block:has(.fc-component) {
+  height: auto;
+  align-self: start;
+}
+
+
+// -----------------------------------------------------------------------------
+// 6. Homepage sections
+// -----------------------------------------------------------------------------
+
+// 6.1 Hero ---------------------------------------------------------------------
+.page-section:has(.fc-hook--hero) {
+  .section-background { background-color: @fc-bg; }
+
+  .sqs-html-content h1 {
+    font-size: var(--fc-h1);
+    line-height: 1.04;
+    color: @fc-ink;
+  }
+
+  // Eyebrow pill = the paragraph directly above the H1
+  .sqs-html-content > p:first-child:has(+ h1) {
+    display: inline-block;
+    margin: 0 0 24px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: @fc-mint-tint;
+    color: @fc-blue;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  // Lead paragraph directly after the H1
+  .sqs-html-content h1 + p {
+    font-size: var(--fc-lead);
+    color: @fc-text;
+    max-width: 600px;
+  }
+}
+
+// 6.2 Facts strip ----------------------------------------------------------------
+.page-section:has(.fc-hook--facts) {
+  .section-background {
+    background-color: @fc-white;
+    border-top: 1px solid @fc-line;
+    border-bottom: 1px solid @fc-line;
+  }
+  .sqs-html-content h3 {
+    font-family: @fc-serif;
+    font-weight: 500;
+    font-size: var(--fc-stat);
+    line-height: 1.1;
+    color: @fc-blue;
+    margin: 0;
+  }
+  .sqs-html-content h3 + p {
+    margin: 0;
+    font-size: 15px;
+    color: @fc-muted;
+  }
+}
+
+// 6.3 Why Fidelity — every text block with an H3 renders as a card ------------
+.page-section:has(.fc-hook--why) {
+  .section-background { background-color: @fc-bg; }
+
+  .fe-block:has(.sqs-block-html h3) {
+    background: @fc-white;
+    border: 1px solid @fc-line;
+    border-radius: var(--fc-radius-card);
+    .sqs-block {
+      padding: 32px !important;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    h3 { font-size: 21px; margin: 0 0 14px; color: @fc-ink; }
+    p  { font-size: 16px; }
+  }
+
+  // Optional icon above the card text (Image block with an SVG from assets/icons)
+  .fe-block:has(.sqs-block-image img[src*="fc-icon"]) img {
+    width: 40px !important;
+    height: 40px !important;
+    object-fit: contain;
+  }
+
+  @media screen and (max-width: 767px) {
+    .fe-block:has(.sqs-block-html h3) .sqs-block {
+      padding: 24px !important;
+    }
+  }
+}
+
+// 6.4 A decade (dark band) -----------------------------------------------------
+.page-section:has(.fc-hook--decade) {
+  .section-background { background-color: @fc-blue; }
+
+  .sqs-html-content h2 { color: @fc-white; font-size: ~"clamp(2rem, 1.6rem + 1.6vw, 2.75rem)"; line-height: 1.12; }
+  .sqs-html-content p  { color: #DCE6EE; font-size: 18px; }
+}
+
+// Big decorative number — Code Block component (blocks/decade-stat.html)
+.fc-bignum {
+  margin: 0;
+  font-family: @fc-serif;
+  font-size: var(--fc-bignum);
+  line-height: 0.9;
+  color: @fc-mint;
+  span {
+    display: block;
+    margin-top: 8px;
+    font-family: @fc-sans;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: @fc-bg;
+  }
+}
+
+// 6.5 Process --------------------------------------------------------------------
+.page-section:has(.fc-hook--process) {
+  .section-background {
+    background-color: @fc-white;
+    border-top: 1px solid @fc-line;
+    border-bottom: 1px solid @fc-line;
+  }
+
+  // Each step = text block with: label paragraph, H3, description
+  .sqs-html-content:has(> p:first-child + h3) {
+    border-top: 3px solid @fc-blue;
+    padding-top: 20px;
+    > p:first-child {
+      margin: 0 0 10px;
+      font-weight: 700;
+      color: @fc-blue;
+    }
+    h3 { font-size: 22px; margin: 0 0 10px; }
+    p:not(:first-child) { font-size: 16px; }
+  }
+}
+
+// 6.6 Brokers (navy panel = Shape block placed behind the content) ------------
+.page-section:has(.fc-hook--brokers) {
+  .section-background { background-color: @fc-bg; }
+
+  .sqs-block-shape .sqs-shape {
+    fill: @fc-ink;
+  }
+  .sqs-html-content {
+    h2 { color: @fc-white; font-size: ~"clamp(1.75rem, 1.45rem + 1.2vw, 2.375rem)"; line-height: 1.15; }
+    p  { color: @fc-on-dark; }
+    // Eyebrow above the H2
+    > p:first-child:has(+ h2) {
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: @fc-mint;
+    }
+  }
+  .sqs-button-element--primary {
+    background-color: @fc-mint !important;
+    color: @fc-ink !important;
+    font-weight: 700;
+    &:hover { background-color: @fc-white !important; }
+  }
+  .sqs-button-element--secondary {
+    color: @fc-bg !important;
+    border-color: @fc-bg !important;
+    &:hover { background-color: @fc-bg !important; color: @fc-ink !important; }
+  }
+}
+
+// 6.7 FAQ (native Accordion block) -------------------------------------------
+.page-section:has(.fc-hook--faq) {
+  .section-background { background-color: @fc-bg; }
+
+  .accordion-divider { display: none; }
+
+  .accordion-item {
+    background: @fc-white;
+    border: 1px solid @fc-line;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 0 24px;
+  }
+  .accordion-item__click-target {
+    min-height: 44px;
+    padding: 20px 0;
+  }
+  .accordion-item__title {
+    font-family: @fc-sans;
+    font-size: 18px;
+    font-weight: 700;
+    color: @fc-ink;
+  }
+  .accordion-item__description {
+    padding-bottom: 20px;
+    color: @fc-text;
+  }
+
+  @media screen and (max-width: 767px) {
+    .accordion-item { padding: 0 18px; }
+    .accordion-item__title { font-size: 17px; }
+  }
+}
+
+// 6.8 Contact band -----------------------------------------------------------
+.page-section:has(.fc-hook--contact) {
+  .section-background { background-color: @fc-mint-tint; }
+  .sqs-html-content strong { color: @fc-ink; }
+}
+
+// 6.9 Footer (hook placed in a footer section) -------------------------------
+.page-section:has(.fc-hook--footer) {
+  .section-background { background-color: @fc-ink; }
+  .sqs-html-content,
+  .sqs-html-content p {
+    color: #9DB0C0;
+    font-size: 14px;
+  }
+  .sqs-html-content strong { color: @fc-bg; }
+  .sqs-html-content a { color: @fc-bg; }
+}
+
+
+// -----------------------------------------------------------------------------
+// 7. Shared component foundations (.fc-component lives in Code Blocks)
+// -----------------------------------------------------------------------------
+.fc-component {
+  font-family: @fc-sans;
+  font-size: 17px;
+  line-height: 1.55;
+  color: @fc-ink;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+
+  *, *::before, *::after { box-sizing: inherit; }
+
+  // Every text-entry control is ≥16px so iOS Safari never auto-zooms on focus.
+  input, select, textarea, button {
+    font-family: inherit;
+    font-size: 16px;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    height: 28px;
+    accent-color: @fc-blue;
+  }
+
+  [hidden] { display: none !important; }
+}
+
+.fc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 14px 30px;
+  border-radius: 999px;
+  border: 0;
+  font-weight: 700;
+  text-decoration: none !important;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &--primary {
+    background: @fc-blue;
+    color: @fc-white !important;
+    &:hover { background: @fc-blue-dark; }
+  }
+  &--mint {
+    background: @fc-mint;
+    color: @fc-ink !important;
+    &:hover { background: @fc-white; }
+  }
+  &--ghost {
+    background: @fc-white;
+    color: @fc-ink !important;
+    border: 1.5px solid @fc-ink;
+  }
+  &--ghost-dark {
+    background: transparent;
+    color: @fc-bg !important;
+    border: 1.5px solid @fc-bg;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// 8. Loan amount picker (blocks/loan-picker.html)
+// -----------------------------------------------------------------------------
+.fc-loan {
+  background: @fc-ink;
+  color: @fc-bg;
+  border-radius: var(--fc-radius-panel);
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  &__title {
+    margin: 0;
+    font-family: @fc-sans !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: @fc-bg !important;
+  }
+  &__amount {
+    font-family: @fc-serif;
+    font-size: ~"clamp(2.75rem, 2.4rem + 1.4vw, 3.5rem)";
+    line-height: 1;
+    color: @fc-white;
+  }
+  &__label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    color: @fc-on-dark-2;
+  }
+  &__range-ends {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -12px;
+    font-size: 13px;
+    color: @fc-on-dark-2;
+  }
+  &__facts {
+    margin: 0;
+    padding-top: 18px;
+    border-top: 1px solid @fc-line-dark;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 15px;
+    > div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    dt { color: @fc-on-dark-2; }
+    dd { margin: 0; font-weight: 600; text-align: right; }
+  }
+  &__note {
+    margin: 0;
+    font-size: 12px;
+    color: #9DB0C0;
+  }
+  input[type="range"] { accent-color: @fc-mint; }
+
+  @media screen and (max-width: 767px) {
+    padding: 24px;
+    gap: 18px;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// 9. Apply form (blocks/apply-form.html) — one Code Block, alone in its section
+// -----------------------------------------------------------------------------
+.fc-apply {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: flex-start;
+  padding: 48px 0 80px;
+
+  // --- Side panel ---
+  &__aside {
+    flex: 1 1 280px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  &__title {
+    margin: 0;
+    font-size: ~"clamp(2.25rem, 1.95rem + 1.2vw, 2.75rem)" !important;
+    line-height: 1.08;
+  }
+  &__intro { margin: 0; color: @fc-text; }
+
+  &__ticks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 15px;
+    li {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin: 0;
+    }
+    svg { flex: none; }
+  }
+
+  &__progress {
+    list-style: none;
+    margin: 0;
+    padding: 20px 0 0;
+    border-top: 1px solid @fc-line;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    li {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin: 0;
+      font-size: 15px;
+      color: @fc-muted;
+    }
+    .fc-apply__num {
+      width: 28px;
+      height: 28px;
+      flex: none;
+      border-radius: 50%;
+      border: 1px solid #8C99A6;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    li.is-reached {
+      color: @fc-ink;
+      font-weight: 700;
+      .fc-apply__num {
+        background: @fc-blue;
+        border-color: @fc-blue;
+        color: @fc-white;
+        font-weight: 700;
+      }
+    }
+  }
+
+  // --- Form column ---
+  &__form {
+    flex: 999 1 560px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+  }
+
+  &__step {
+    background: @fc-white;
+    border: 1px solid @fc-line;
+    border-radius: var(--fc-radius-panel);
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0;
+    min-width: 0;
+  }
+  &__step-title {
+    margin: 0;
+    font-family: @fc-sans !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0;
+    &:focus { outline: none; }
+  }
+  &__help {
+    margin: -16px 0 0;
+    color: @fc-text;
+    font-size: 15px;
+  }
+
+  &__amount {
+    font-family: @fc-serif;
+    font-weight: 500;
+    font-size: ~"clamp(2.5rem, 2.2rem + 1.2vw, 3rem)";
+    line-height: 1;
+    color: @fc-blue;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: ~"repeat(auto-fit, minmax(min(100%, 230px), 1fr))";
+    gap: 18px;
+  }
+  &__full { grid-column: ~"1 / -1"; }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+  }
+  &__hint {
+    font-weight: 400;
+    font-size: 14px;
+    color: @fc-muted;
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  select,
+  textarea {
+    width: 100%;
+    font-weight: 400;
+    padding: 13px;
+    min-height: 48px;
+    border: 1px solid @fc-field;
+    border-radius: 10px;
+    background: @fc-white;
+    color: @fc-ink;
+    &:focus {
+      border-color: @fc-blue;
+      outline: 2px solid @fc-blue;
+      outline-offset: 0;
+    }
+    &[aria-invalid="true"] { border-color: @fc-error; }
+  }
+  input[type="file"] {
+    width: 100%;
+    padding: 14px;
+    border: 1.5px dashed @fc-field;
+    border-radius: 10px;
+    background: @fc-bg;
+  }
+
+  // Fieldsets of radio "chips"
+  fieldset.fc-apply__choices {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    legend {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 12px;
+      padding: 0;
+    }
+  }
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    &--cards {
+      display: grid;
+      grid-template-columns: ~"repeat(auto-fit, minmax(min(100%, 220px), 1fr))";
+    }
+  }
+  &__chip {
+    position: relative;
+    margin: 0;
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+    span {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 11px 18px;
+      border: 1px solid @fc-field;
+      border-radius: 999px;
+      background: @fc-white;
+      cursor: pointer;
+      font-weight: 400;
+    }
+    input:checked + span {
+      border: 2px solid @fc-blue;
+      padding: 10px 17px;
+      background: @fc-mint-tint;
+      font-weight: 700;
+    }
+    input:focus-visible + span {
+      outline: 3px solid @fc-blue;
+      outline-offset: 2px;
+    }
+  }
+  &__chips--cards &__chip span {
+    min-height: 52px;
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  &__chips--cards &__chip input:checked + span {
+    padding: 13px 15px;
+  }
+
+  &__consent {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 15px;
+    color: @fc-text;
+    input {
+      width: 22px;
+      height: 22px;
+      margin-top: 2px;
+      flex: none;
+      accent-color: @fc-blue;
+    }
+  }
+
+  &__error {
+    margin: 0;
+    color: @fc-error;
+    font-weight: 700;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    &--end { justify-content: flex-end; }
+  }
+
+  &__summary {
+    margin: 0;
+    display: grid;
+    grid-template-columns: ~"repeat(auto-fit, minmax(min(100%, 230px), 1fr))";
+    gap: 14px 32px;
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      border-bottom: 1px solid #E2E9EE;
+      padding-bottom: 10px;
+      min-width: 0;
+    }
+    dt { font-size: 14px; color: @fc-muted; }
+    dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+  }
+
+  &__done {
+    background: @fc-ink;
+    color: @fc-bg;
+    border-radius: var(--fc-radius-panel);
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: flex-start;
+    h2 {
+      margin: 0;
+      color: @fc-bg;
+      font-size: ~"clamp(2rem, 1.7rem + 1.2vw, 2.5rem)" !important;
+      line-height: 1.1;
+    }
+    p { margin: 0; color: @fc-on-dark; }
+  }
+
+  &__fineprint {
+    margin: 0;
+    font-size: 14px;
+    color: @fc-muted;
+  }
+
+  // Spam honeypot — off-screen, not display:none (some bots skip hidden fields)
+  &__hp {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  // Without JS every step shows as one long form; with JS only one shows.
+  &.is-enhanced &__step:not(.is-active) { display: none; }
+
+  @media screen and (max-width: 767px) {
+    gap: 28px;
+    padding: 24px 0 56px;
+
+    &__step { padding: 24px 20px; gap: 20px; }
+    &__done { padding: 32px 24px; }
+
+    // Full-width, thumb-reachable buttons; primary action first
+    &__actions {
+      flex-direction: column-reverse;
+      .fc-btn { width: 100%; }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fc-btn,
+  .sqs-block-button-element {
+    transition: none;
+  }
+}

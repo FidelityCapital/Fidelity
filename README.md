@@ -1,6 +1,6 @@
 # Fidelity
 
-Custom code for the Fidelity Capital Squarespace 7.1 site. This repository is the source of truth: every change is made here first and then pasted into Squarespace.
+Custom code for the Fidelity Capital Squarespace 7.1 site ("Mortgage fund" redesign). This repository is the source of truth: every change is made here first and then pasted into Squarespace.
 
 - **Plan and step-by-step build guide:** [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)
 
